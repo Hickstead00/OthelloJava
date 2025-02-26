@@ -28,5 +28,5 @@ replay_pid*
 *.iml
 
 # Ignore build and out directories
-/out/
-/build/
+out/
+build/
