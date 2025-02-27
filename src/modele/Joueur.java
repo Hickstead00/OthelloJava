@@ -9,5 +9,8 @@ public class Joueur {
         this.couleur = couleur;
     }
 
+    public String toString(){
+        return nom + " ";
+    }
 
 }

@@ -24,6 +24,6 @@ public class Coordonnee {
     @Override
     public String toString() {
         char lettre = (char)('A' + y);
-        return lettre + Integer.toString(x + 1);
+        return lettre + Integer.toString(x);
     }
 }

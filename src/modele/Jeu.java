@@ -20,6 +20,10 @@ public class Jeu {
         return plateau;
     }
 
+    public int getTaillePlateau(){
+        return plateau.getTailleJeu();
+    }
+
     public Joueur getJoueurCourant() {
         return joueurCourant;
     }
