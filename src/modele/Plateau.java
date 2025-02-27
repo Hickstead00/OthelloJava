@@ -66,4 +66,13 @@ public class Plateau {
         }
         System.out.println();
     }
+
+    public char[][] getPlateau() {
+        return plateau;
+    }
+
+    public void ajoutPion(int x, int y) {
+        plateau[x][y] = PION_NOIR;
+    }
+
 }
