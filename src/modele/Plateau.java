@@ -1,9 +1,7 @@
 package modele;
 
-import java.sql.SQLOutput;
-
 public class Plateau {
-    private char[][] plateau;
+    private Pion[][] plateau;
     private final int TAILLE_JEU;
 
     // Codes ANSI pour les couleurs
@@ -17,7 +15,7 @@ public class Plateau {
 
     public Plateau(int tailleJeu) {
         this.TAILLE_JEU = tailleJeu;
-        plateau = new char[TAILLE_JEU][TAILLE_JEU];
+        plateau = new Pion[TAILLE_JEU][TAILLE_JEU];
         initialiserPlateau();
     }
 
@@ -25,16 +23,16 @@ public class Plateau {
         // Initialiser toutes les cases avec des cases vides
         for (int i = 0; i < TAILLE_JEU; i++) {
             for (int j = 0; j < TAILLE_JEU; j++) {
-                plateau[i][j] = CASE_VIDE;
+                plateau[i][j] = new Pion (i,j,CASE_VIDE);
             }
         }
 
         // Position initiale des pions
         int milieu = TAILLE_JEU / 2 - 1;
-        plateau[milieu][milieu] = PION_BLANC;
-        plateau[milieu][milieu + 1] = PION_NOIR;
-        plateau[milieu + 1][milieu] = PION_NOIR;
-        plateau[milieu + 1][milieu + 1] = PION_BLANC;
+        plateau[milieu][milieu] = new Pion(milieu,milieu,PION_BLANC);
+        plateau[milieu][milieu + 1] = new Pion(milieu,milieu+1, PION_NOIR);
+        plateau[milieu + 1][milieu] = new Pion (milieu+1,milieu+1,PION_NOIR);
+        plateau[milieu + 1][milieu + 1] = new Pion (milieu+1,milieu+1,PION_BLANC);
     }
 
     public void afficherPlateau() {
@@ -50,7 +48,7 @@ public class Plateau {
         for (int i = 0; i < TAILLE_JEU; i++) {
             System.out.printf("%2d ", i + 1); // Affiche le numéro de ligne (1-8 au lieu de 0-7) d'ou le i + 1
             for (int j = 0; j < TAILLE_JEU; j++) {
-                if (plateau[i][j] == CASE_VIDE) {
+                if ( plateau[i][j].getCouleurPion() == CASE_VIDE) {
                     System.out.print(VERT + plateau[i][j] + RESET + " ");
                 } else {
                     System.out.print(plateau[i][j] + " ");
@@ -65,5 +63,14 @@ public class Plateau {
             System.out.print((char)('A' + j) + " ");
         }
         System.out.println();
+    }
+
+    public Pion[][] getPlateau() {
+        return plateau;
+    }
+
+    public void placerPion(int x, int y, char couleur){
+        plateau[x][y]=new Pion(x, y,couleur);
+
     }
 }
