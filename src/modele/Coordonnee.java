@@ -17,6 +17,7 @@ public class Coordonnee {
         return y;
     }
 
+    // Méthode qui vérifie que la coordonée est bien située dans le plateau de jeu
     public boolean estValide(int taillePlateau){
         return x >= 0 && x < taillePlateau && y >= 0 && y < taillePlateau;
     }

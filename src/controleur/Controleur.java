@@ -14,18 +14,20 @@ public class Controleur {
         this.jeu = new Jeu();
     }
 
-
+    // Méthode principale qui permet de gérer le déroulement du jeu
     public void jouer() {
         initialiserPartie();
         deroulementPartie();
         //finPartie();
     }
 
+    // Méthode qui initialise la partie
     private void initialiserPartie() {
         ihm.initPartie();
         jeu.initialiserJoueur(ihm.collecterJoueur(), ihm.collecterJoueur());
     }
 
+    // Méthode qui gère le déroulement logique du coeur de la partie
     private void deroulementPartie() {
         boolean partieTerminee = false;
         //while (!partieTerminee) {

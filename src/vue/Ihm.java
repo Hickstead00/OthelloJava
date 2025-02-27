@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class Ihm {
 
+    // ANSI code pour colorer les caractères "□" du damier
     private static final String VERT = "\u001B[32m";
     private static final String RESET = "\u001B[0m";
 
@@ -19,6 +20,7 @@ public class Ihm {
         System.out.println("Bievenue dans Othello");
     }
 
+    // Méthode pour récupérer le nom des joueurs
     public String collecterJoueur() {
         System.out.println("Entrez le nom du Joueur 1");
         String joueur1 = sc.nextLine();
@@ -26,6 +28,8 @@ public class Ihm {
         return joueur1;
     }
 
+    // Méthode pour afficherle plateau : Parcours la matrice en affichant les couleurs des pions (notamment la couleur
+    // "□" qui sert de base à chaque pion)
     public void afficherPlateau(Plateau plateau) {
         // Afficher les lettres des colonnes
         System.out.println();
@@ -57,6 +61,7 @@ public class Ihm {
         System.out.println();
     }
 
+    // Méthode qui permet de récupérer un coup et d'en vérifier la légalité syntaxique
     public Coordonnee collecterCoup(Joueur joueur) {
         while (true) {
             try {
@@ -65,21 +70,28 @@ public class Ihm {
 
                 String ligne = sc.nextLine();
 
+                // Division de la string en coupant les espaces et en opérant un split entre les 2 parties de l'input
                 String[] parties = ligne.trim().split("\\s+");
 
+                // Verification que la string ne contenait que 2 éléments
                 if (parties.length != 2) {
-                    System.out.println("Format incorrect. Veuillez entrer une lettre puis un chiffre séparés par un espace");
+                    System.out.println("Format incorrect. Veuillez entrer une lettre puis un chiffre séparés " +
+                            "par un espace");
                     continue;
                 }
 
+                // On récupère le premier élément et on vérifie qu'il s'agit d'une lettre unique
                 String lettre = parties[0];
                 if (lettre.length() != 1 || !Character.isLetter(lettre.charAt(0))) {
                     System.out.println("Premier caractère invalide. Veuillez entrer une lettre.");
                     continue;
                 }
 
+                // On passe le caractère en uppercase afin de sécuriser un input en minuscule
                 int y = Character.toUpperCase(lettre.charAt(0) - 'A');
                 int x;
+
+                // On vérifie si le deuxième élément est bien un entier
                 try {
                     x = Integer.parseInt(parties[1]);
                 } catch (NumberFormatException e) {

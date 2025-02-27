@@ -10,6 +10,7 @@ public class Jeu {
         plateau = new Plateau(8);
     }
 
+    // Méthode qui initialise les 2 joueurs et détermine le premier joueur.
     public void initialiserJoueur(String nomJoueur1, String nomJoueur2){
         this.joueur1 = new Joueur(nomJoueur1, '○');
         this.joueur2 = new Joueur(nomJoueur2, '●');

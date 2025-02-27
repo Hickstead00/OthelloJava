@@ -20,6 +20,7 @@ public class Plateau {
         return plateau;
     }
 
+    // Getter permetant de retourner l'emplacement du pion dans le tableau via sa coordonnée
     public Pion getPion(Coordonnee coordonnee) {
         int x = coordonnee.getX();
         int y = coordonnee.getY();
@@ -42,7 +43,8 @@ public class Plateau {
         return PION_BLANC;
     }
 
-
+    // Méthode permetant d'initialiser le tableau et de le remplir de pions de couleur "CASE_VIDE" simulant les cases
+    // du plateau qui seront ensuites accédées et changées à souhait pour prendre les couleurs necessaires
     private void initialiserPlateau() {
         // Initialiser toutes les cases avec des cases vides
         for (int i = 0; i < TAILLE_JEU; i++) {
