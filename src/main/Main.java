@@ -1,16 +1,13 @@
 package main;
 
-import modele.Joueur;
-import modele.Plateau;
+import controleur.Controleur;
+import vue.Ihm;
 
 public class Main {
     public static void main(String[] args) {
-        Plateau plateau = new Plateau(8);
-        plateau.afficherPlateau();
-        Joueur joueur = new Joueur("TEST", '●');
-        joueur.poserPion("A", "1", plateau);
-        plateau.afficherPlateau();
-
+        Ihm ihm = new Ihm();
+        Controleur controleur = new Controleur(ihm);
+        controleur.jouer();
     }
 
 }

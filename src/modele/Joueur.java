@@ -9,11 +9,5 @@ public class Joueur {
         this.couleur = couleur;
     }
 
-    public void poserPion(String colonne, String ligne, Plateau plateau) {
-        int y = colonne.charAt(0) - 'A';
-        int x = Integer.parseInt(ligne) - 1;
-        plateau.ajoutPion(x, y);
-
-    }
 
 }

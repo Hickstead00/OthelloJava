@@ -1,6 +1,32 @@
 package modele;
 
-public class Regles {
+public class Jeu {
+    private Joueur joueur1;
+    private Joueur joueur2;
+    private Joueur joueurCourant;
+    private Plateau plateau;
+
+    public Jeu(){
+        plateau = new Plateau(8);
+    }
+
+    public void initialiserJoueur(String nomJoueur1, String nomJoueur2){
+        this.joueur1 = new Joueur(nomJoueur1, '○');
+        this.joueur2 = new Joueur(nomJoueur2, '●');
+        this.joueurCourant = joueur1;
+    }
+
+    public Plateau getPlateau() {
+        return plateau;
+    }
+
+    public Joueur getJoueurCourant() {
+        return joueurCourant;
+    }
+
+    public void changerJoueur(){
+        joueurCourant = (joueurCourant == joueur1) ? joueur2 : joueur1;
+    }
 
     // Noir commence toujours la partie
 
