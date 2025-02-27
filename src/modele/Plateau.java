@@ -69,6 +69,10 @@ public class Plateau {
         return plateau;
     }
 
+    public Pion getPosPion(int x, int y) {
+        return plateau[x][y];
+    }
+
     public void placerPion(int x, int y, char couleur){
         plateau[x][y]=new Pion(x, y,couleur);
 

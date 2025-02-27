@@ -10,7 +10,7 @@ public class Joueur {
     }
 
     public void placerPion(Plateau plateau,int x, int y) {
-        plateau.getPlateau().setCouleurPion(this.couleur);
+        plateau.getPosPion(x,y).setCouleurPion(this.couleur);
     }
 
     public char getCouleurJoueur() {
