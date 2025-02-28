@@ -1,12 +1,13 @@
 package main;
 
-import modele.Plateau;
+import controleur.Controleur;
+import vue.Ihm;
 
 public class Main {
     public static void main(String[] args) {
-        Plateau plateau = new Plateau(8);
-        plateau.afficherPlateau();
-
+        Ihm ihm = new Ihm();
+        Controleur controleur = new Controleur(ihm);
+        controleur.jouer();
     }
 
 }

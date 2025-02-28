@@ -2,21 +2,24 @@ package modele;
 
 public class Pion {
     private char couleurPion;
-    private int x;
-    private int y;
+    private Coordonnee coordonnee;
 
-    public int getX() {
-        return x;
-    }
 
-    public int getY() {
-        return y;
-    }
-
-    public Pion(int x, int y, char couleur) {
+    public Pion(Coordonnee coordonnee, char couleur) {
         this.couleurPion = couleur;
-        this.x=x;
-        this.y=y;
+        this.coordonnee = coordonnee;
+    }
+
+    public char getCouleur() {
+        return couleurPion;
+    }
+
+    public void setCouleur(char couleur) {
+        this.couleurPion = couleur;
+    }
+
+    public Coordonnee getCoordonnee() {
+        return coordonnee;
     }
 
     @Override
@@ -24,13 +27,4 @@ public class Pion {
 
         return ""+couleurPion;
     }
-
-    public char getCouleurPion() {
-        return couleurPion;
-    }
-
-    public void setCouleurPion(char couleurPion) {
-        this.couleurPion = couleurPion;
-    }
-
 }

@@ -9,20 +9,8 @@ public class Joueur {
         this.couleur = couleur;
     }
 
-    public void placerPion(Plateau plateau,int x, int y) {
-        plateau.getPosPion(x,y).setCouleurPion(this.couleur);
+    public String toString(){
+        return nom + " ";
     }
-
-    public char getCouleurJoueur() {
-        return couleur;
-    }
-
-    public void setCouleurJoueur(char couleur) {
-        this.couleur = couleur;
-    }
-    public String getNom(){
-        return nom;
-    }
-
 
 }

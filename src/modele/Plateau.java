@@ -4,13 +4,9 @@ public class Plateau {
     private Pion[][] plateau;
     private final int TAILLE_JEU;
 
-    // Codes ANSI pour les couleurs
-    private static final String VERT = "\u001B[32m";
-    private static final String RESET = "\u001B[0m";
-
     // Caractères pour représenter les pions et cases
-    private static final char PION_BLANC = '○';
-    private static final char PION_NOIR = '●';
+    private static final char PION_NOIR = '○';
+    private static final char PION_BLANC = '●';
     private static final char CASE_VIDE = '□';
 
     public Plateau(int tailleJeu) {
@@ -19,62 +15,50 @@ public class Plateau {
         initialiserPlateau();
     }
 
-    private void initialiserPlateau() {
-        // Initialiser toutes les cases avec des cases vides
-        for (int i = 0; i < TAILLE_JEU; i++) {
-            for (int j = 0; j < TAILLE_JEU; j++) {
-                plateau[i][j] = new Pion (i,j,CASE_VIDE);
-            }
-        }
-
-        // Position initiale des pions
-        int milieu = TAILLE_JEU / 2 - 1;
-        plateau[milieu][milieu] = new Pion(milieu,milieu,PION_BLANC);
-        plateau[milieu][milieu + 1] = new Pion(milieu,milieu+1, PION_NOIR);
-        plateau[milieu + 1][milieu] = new Pion (milieu+1,milieu+1,PION_NOIR);
-        plateau[milieu + 1][milieu + 1] = new Pion (milieu+1,milieu+1,PION_BLANC);
-    }
-
-    public void afficherPlateau() {
-        // Afficher les lettres des colonnes
-        System.out.println();
-        System.out.print("   ");
-        for (int j = 0; j < TAILLE_JEU; j++) {
-            System.out.print((char)('A' + j) + " ");
-        }
-        System.out.println();
-
-        // Afficher le plateau
-        for (int i = 0; i < TAILLE_JEU; i++) {
-            System.out.printf("%2d ", i + 1); // Affiche le numéro de ligne (1-8 au lieu de 0-7) d'ou le i + 1
-            for (int j = 0; j < TAILLE_JEU; j++) {
-                if ( plateau[i][j].getCouleurPion() == CASE_VIDE) {
-                    System.out.print(VERT + plateau[i][j] + RESET + " ");
-                } else {
-                    System.out.print(plateau[i][j] + " ");
-                }
-            }
-            System.out.println(i + 1); // Numéro de ligne à droite
-        }
-
-        // Réafficher les lettres en bas
-        System.out.print("   ");
-        for (int j = 0; j < TAILLE_JEU; j++) {
-            System.out.print((char)('A' + j) + " ");
-        }
-        System.out.println();
-    }
 
     public Pion[][] getPlateau() {
         return plateau;
     }
 
-    public Pion getPosPion(int x, int y) {
+    // Getter permetant de retourner l'emplacement du pion dans le tableau via sa coordonnée
+    public Pion getPion(Coordonnee coordonnee) {
+        int x = coordonnee.getX();
+        int y = coordonnee.getY();
         return plateau[x][y];
     }
 
-    public void placerPion(int x, int y, char couleur){
-        plateau[x][y]=new Pion(x, y,couleur);
-
+    public int getTailleJeu() {
+        return TAILLE_JEU;
     }
+
+    public char getCaseVide() {
+        return CASE_VIDE;
+    }
+
+    public char getPionNoir() {
+        return PION_NOIR;
+    }
+
+    public char getPionBlanc() {
+        return PION_BLANC;
+    }
+
+    // Méthode permetant d'initialiser le tableau et de le remplir de pions de couleur "CASE_VIDE" simulant les cases
+    // du plateau qui seront ensuites accédées et changées à souhait pour prendre les couleurs necessaires
+    private void initialiserPlateau() {
+        // Initialiser toutes les cases avec des cases vides
+        for (int i = 0; i < TAILLE_JEU; i++) {
+            for (int j = 0; j < TAILLE_JEU; j++) {
+                plateau[i][j] = new Pion(new Coordonnee(i, j), CASE_VIDE);
+            }
+        }
+
+        // Position initiale des pions
+        int milieu = TAILLE_JEU / 2 - 1;
+        plateau[milieu][milieu] = new Pion(new Coordonnee(milieu, milieu), PION_BLANC);
+        plateau[milieu][milieu + 1] = new Pion(new Coordonnee (milieu, milieu + 1), PION_NOIR);
+        plateau[milieu + 1][milieu] = new Pion(new Coordonnee (milieu + 1, milieu), PION_NOIR);
+        plateau[milieu + 1][milieu + 1] = new Pion(new Coordonnee (milieu + 1, milieu +1), PION_BLANC);
+    }
+
 }
