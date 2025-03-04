@@ -1,64 +1,53 @@
 package modele;
 
 public class Plateau {
-    private Pion[][] plateau;
-    private final int TAILLE_JEU;
+    private String[][] plateau;
+    private static final int TAILLE_PLATEAU = 8;
+    private final String couleurNoire = "\u26AB";
+    private final String couleurBlanc = "\u26AA";
+    private final String caseVide = "\uD83D\uDFE9";
 
-    // Caractères pour représenter les pions et cases
-    private static final char PION_NOIR = '○';
-    private static final char PION_BLANC = '●';
-    private static final char CASE_VIDE = '□';
-
-    public Plateau(int tailleJeu) {
-        this.TAILLE_JEU = tailleJeu;
-        plateau = new Pion[TAILLE_JEU][TAILLE_JEU];
-        initialiserPlateau();
+    public Plateau() {
+        this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
+        initialiser();
     }
 
+    public int getTaille() {
+        return TAILLE_PLATEAU;
+    }
 
-    public Pion[][] getPlateau() {
+    public String[][] getPlateau() {
         return plateau;
     }
 
-    // Getter permetant de retourner l'emplacement du pion dans le tableau via sa coordonnée
-    public Pion getPion(Coordonnee coordonnee) {
-        int x = coordonnee.getX();
-        int y = coordonnee.getY();
-        return plateau[x][y];
+    public String getCouleurNoire() {
+        return couleurNoire;
     }
 
-    public int getTailleJeu() {
-        return TAILLE_JEU;
+    public String getCouleurBlanc() {
+        return couleurBlanc;
     }
 
-    public char getCaseVide() {
-        return CASE_VIDE;
-    }
-
-    public char getPionNoir() {
-        return PION_NOIR;
-    }
-
-    public char getPionBlanc() {
-        return PION_BLANC;
-    }
-
-    // Méthode permetant d'initialiser le tableau et de le remplir de pions de couleur "CASE_VIDE" simulant les cases
-    // du plateau qui seront ensuites accédées et changées à souhait pour prendre les couleurs necessaires
-    private void initialiserPlateau() {
-        // Initialiser toutes les cases avec des cases vides
-        for (int i = 0; i < TAILLE_JEU; i++) {
-            for (int j = 0; j < TAILLE_JEU; j++) {
-                plateau[i][j] = new Pion(new Coordonnee(i, j), CASE_VIDE);
+    private void initialiser(){
+        for (int i = 0; i < TAILLE_PLATEAU; i++) {
+            for (int j = 0; j < TAILLE_PLATEAU; j++) {
+                plateau[i][j] = caseVide;
             }
         }
 
-        // Position initiale des pions
-        int milieu = TAILLE_JEU / 2 - 1;
-        plateau[milieu][milieu] = new Pion(new Coordonnee(milieu, milieu), PION_BLANC);
-        plateau[milieu][milieu + 1] = new Pion(new Coordonnee (milieu, milieu + 1), PION_NOIR);
-        plateau[milieu + 1][milieu] = new Pion(new Coordonnee (milieu + 1, milieu), PION_NOIR);
-        plateau[milieu + 1][milieu + 1] = new Pion(new Coordonnee (milieu + 1, milieu +1), PION_BLANC);
+        plateau[3][3] = couleurBlanc;
+        plateau[3][4] = couleurNoire;
+        plateau[4][3] = couleurNoire;
+        plateau[4][4] = couleurBlanc;
     }
 
+    // ta méthode VerifCoup
+    // ta méthode VerifLigne
+    // ta méthode retournerPion
+    // Une méthode JouerCoup qui fait appel à retournerPion et verif direction en parcourant le plateau sur chaque verif direction et si c'est ok retourne les pions ?
+    // Une methode compterPion pour compter les pions de chaque couleur pour le calcul du score
+
+
 }
+
+

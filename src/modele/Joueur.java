@@ -2,15 +2,15 @@ package modele;
 
 public class Joueur {
     private String nom;
-    private char couleur;
+    private String couleur;
 
-    public Joueur(String nom, char couleur) {
+    public Joueur(String nom, String couleur) {
         this.nom = nom;
         this.couleur = couleur;
     }
 
-    public String toString(){
-        return nom + " ";
+    public String getCouleur() {
+        return couleur;
     }
 
 }
