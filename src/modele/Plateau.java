@@ -27,6 +27,10 @@ public class Plateau {
         return plateau[x][y];
     }
 
+    public boolean appartientPlateau(int x, int y) {
+        return x>= 0 && x<TAILLE_JEU && y>= 0 && y<TAILLE_JEU;
+    }
+
     public int getTailleJeu() {
         return TAILLE_JEU;
     }
