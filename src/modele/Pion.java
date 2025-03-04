@@ -2,12 +2,14 @@ package modele;
 
 public class Pion {
     private char couleurPion;
-    private Coordonnee coordonnee;
+    private int x;
+    private int y;
 
 
-    public Pion(Coordonnee coordonnee, char couleur) {
+    public Pion(char couleur,int x, int y) {
         this.couleurPion = couleur;
-        this.coordonnee = coordonnee;
+        this.x=x;
+        this.y=y;
     }
 
     public char getCouleur() {
@@ -18,8 +20,12 @@ public class Pion {
         this.couleurPion = couleur;
     }
 
-    public Coordonnee getCoordonnee() {
-        return coordonnee;
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     @Override

@@ -39,10 +39,82 @@ public class Jeu {
     // - Coup non légal : Le pion ne peut pas retourner d'autres pions
     // - Coup non légal : Le joueur tente de passer alors qu'il est possible de poser un pion
     //
+    public boolean verifCoup(Pion pion ) {
+        char couleurAdver = (joueurCourant.getCouleur() == '○') ? '●' : '○';
+
+        if (pion.getCouleur() != '□') {
+            return false;
+        }
+
+        for (int i = -1; i <= 1; i ++) {
+            for (int j = -1; j <= 1; j ++) {
+                if (i==0 && j==0) {continue;}
+                if (verifLigneCoup(pion, i, j, couleurAdver)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean verifLigneCoup(Pion pion ,int directionX,int directionY, char couleurAdver){
+        int x=pion.getX()+directionX;
+        int y=pion.getY()+directionY;
+        boolean estSandwich=false;
+
+        if (plateau.appartientPlateau(x,y) && plateau.getPion(x,y).getCouleur()== couleurAdver){
+            while(plateau.appartientPlateau(x,y)){
+                if ((plateau.getPion(x,y).getCouleur() == joueurCourant.getCouleur())){
+                    return estSandwich;}
+                x+=directionX;
+                y+=directionY;
+                estSandwich=true;
+
+            }
+        }
+        return estSandwich;
+    }
+
+    public void retournerPions(Pion pion){
+        char couleurAdver = (joueurCourant.getCouleur() == '○') ? '●' : '○';
+        Pion[] pionRet=new Pion[plateau.getTailleJeu()];
+
+        for (int i = -1; i <= 1; i ++) {
+            for (int j = -1; j <= 1; j++) {
+                int x = pion.getX() + i;
+                int y = pion.getY() + j;
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+                if (plateau.appartientPlateau(x, y) && plateau.getPion(x, y).getCouleur() == couleurAdver) {
+                    while (plateau.appartientPlateau(x, y)) {
+                        if ((plateau.getPion(x, y).getCouleur() == joueurCourant.getCouleur())) {
+                            for (int k = 0; k <= pionRet.length; k++) {
+                                if (pionRet[k] == null) {
+                                    pionRet[k] = plateau.getPion(x, y);
+                                }
+                            }
+                        }
+                        x += i;
+                        y += j;
+                    }
+                }
+            }
+        }
+        for (int p=0; p<= pionRet.length && pionRet[p]!= null; p++){
+            pionRet[p].setCouleur(joueurCourant.getCouleur());
+        }
+    }
+
+
 
     // Methode "adjacent"
     // - Qui étant donné un pion à une position X calcule les coordonées du carré autour de lui pour vérifier l'adjacance diagonale, verticale, horizontale
+    public  adjacent(Pion pion){
 
+        
+
+    }
     // Methode poser un pion/jouer un tour :
     // - Adjacent à un pion adverse
     // - Si impossible de retourner un pion alors le joueur passe son tour
