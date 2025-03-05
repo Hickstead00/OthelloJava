@@ -18,7 +18,7 @@ public class Ihm {
     }
 
     public String demanderCoup(Joueur joueur) {
-        System.out.printf("%s, entrez votre coup, (ex : A1) : ", joueur);
+        System.out.printf("%s, entrez votre coup (ex : A1) ou 'P' pour passer : ", joueur);
         return sc.nextLine().toUpperCase();
     }
 
@@ -26,15 +26,14 @@ public class Ihm {
 
         System.out.println("   A  B  C  D   E  F  G  H");
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < taille; i++) {
             System.out.print((i+1) + " ");
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < taille; j++) {
                 System.out.print(plateau[i][j] + " ");
             }
             System.out.println("" + (i+1));
         }
 
-        // Pied
         System.out.println("   A  B  C  D   E  F  G  H");
     }
 
@@ -59,13 +58,29 @@ public class Ihm {
         System.out.println("Egalite");
     }
 
+    public String demanderNouvellePartie() {
+        System.out.print("Voulez-vous jouer une nouvelle partie ? (O/N) : ");
+        return sc.nextLine().toUpperCase();
+    }
 
-    public boolean demanderNouvellePartie() {
-        return false;
+    public void afficherReponseInvalide() {
+        System.out.println("Veuillez répondre par O (Oui) ou N (Non)");
     }
 
     public void afficherStatistiques(Joueur joueur1, int victoireJoueur1, Joueur joueur2, int victoireJoueur2) {
-        System.out.println("Joueur1 : " + joueur1 + "Nb victoires : " + victoireJoueur1);
-        System.out.println("Joueur2 : " + joueur2 + "Nb victoires : " + victoireJoueur2);
+        System.out.println("Joueur1 : " + joueur1 +"." + " Nb victoires : " + victoireJoueur1);
+        System.out.println("Joueur2 : " + joueur2 +"." + " Nb victoires : " + victoireJoueur2);
+    }
+
+    public void afficherPassageImpossible() {
+        System.out.println("Vous ne pouvez pas passer votre tour car vous avez encore des coups possibles !");
+    }
+
+    public void afficherAucunCoupPossible(Joueur joueur) {
+        System.out.println(joueur + " n'a aucun coup possible. Vous devez passer votre tour en tapant 'P'.");
+    }
+
+    public void afficherDoitPasser() {
+        System.out.println("Vous n'avez aucun coup possible, vous devez taper 'P' pour passer votre tour !");
     }
 }

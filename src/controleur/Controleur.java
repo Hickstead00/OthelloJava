@@ -1,21 +1,3 @@
-// Flow du jeu :
-// Dans le main on crée un controleur avec un ihm. Puis on appelle controleur.jouer()
-// Jouer() initialise 2 joueurs, défini le premier joueur et lance une boucle while globale sur "l'application"
-// Cette boucle apelle jouerPartie() qui elle lance une boucle sur une partie.
-// La boucle jouerPartie() regarde si la partie est terminée (qui est la fonction qui retourne un bool true tant que les deux verifCoup sont OK et que donc au moins 1 des 2 joueurs peut jouer)
-// On affiche le plateau puis on regarde si le joueur actuel peut jouer, si oui alors on joue un coup.
-// Dans Jouer un coup tant que le coup n'est pas syntaxiquement ok on le boucle, quand il est ok syntaxiquement on le verif sur le plateau, on le passe a true pour casser le while, on joue le coup et on passe au joueur suivant.
-// On sort donc du while et on remonte dans la fonction jouer partie qui va afficher et demander un nouveau coup.
-// Il y a un moment ou le while(!partieTerminee) va devenir faux, donc on sort et on apelle terminer partie qui va calculer le score en appelant compter pion puis les afficher.
-// Et puisqu'on sort aussi de la fonction jouerPartie on remonte encore d'un cran et on retombe sur continuerJeu = ihm.demanderNouvellePartie() qui fera un sc.nextline() avec un test oui/non.
-// Si oui le boolean est vrai est donc le while "application globale" reprend (et la il faut que je modifie car actuellement je ne reset pas le plateau).
-// Si non on appelle ihm.afficherStats sur les victoires des joueurs 1 et 2 qui ont été incrémentées dans terminerPartie.
-
-
-
-
-
-
 package controleur;
 
 import modele.Joueur;
@@ -38,43 +20,82 @@ public class Controleur {
         this.plateau = new Plateau();
     }
 
-
+    // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
+    // lorsque jouerPartie() se résoud
     public void jouer() {
-        Joueur joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
-        Joueur joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());
+        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
+        this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());
         joueurActuel = joueur1;
 
         boolean continuerJeu = true;
         while (continuerJeu) {
             jouerPartie();
-            continuerJeu = false; //normalement on appelle continuerjeu;
+            
+            String reponse;
+            boolean reponseValide = false;
+            while (!reponseValide) {
+                reponse = ihm.demanderNouvellePartie();
+                if (reponse.equals("O")) {
+                    reponseValide = true;
+                    this.plateau = new Plateau();
+                    joueurActuel = joueur1;
+                } else if (reponse.equals("N")) {
+                    reponseValide = true;
+                    continuerJeu = false;
+                } else {
+                    ihm.afficherReponseInvalide();
+                }
+            }
         }
 
         ihm.afficherStatistiques(joueur1, victoireJoueur1, joueur2, victoireJoueur2);
     }
 
+    // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si
+    // le joueur actuel peut jouer, si oui il joue un coup, sinon on lui affiche qu'aucun coup n'est possible et
+    // l'invite à passer son tour
+    // Lorsque estTermine deviens faux (quand aucun joueur ne peut jouer) on sort du while on passe dans terminerPartie
+    // qui calcule les scores et affecte les victoires si besoin puis on quitte cette méthode pour remonter dans jouer()
     public void jouerPartie() {
         while (!estPartieTerminee()) {
             ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
-            if (peutJouer(joueurActuel) || peutPasser(joueurActuel)) {
+            if (peutJouer(joueurActuel)) {
                 jouerUnCoup(joueurActuel);
+            } else {
+                ihm.afficherAucunCoupPossible(joueurActuel);
+                String reponse = ihm.demanderCoup(joueurActuel);
+                if (reponse.equals("P")) {
+                    joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+                } else {
+                    ihm.afficherDoitPasser();
+                }
             }
-
         }
-
+        ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
         terminerPartie();
     }
 
-    public void jouerUnCoup(Joueur joueur ) {
+    // Gère la syntaxe du coup, tant que le coup n'est pas valide on le demande. Si le joueur demande a passer et n'a
+    // pas le droit alors on renvoie une erreur. Sinon on prend le coup et on vérifie sa syntaxe. Si sa syntaxe est
+    // valide on va chercher dans le modèle si le coup est légal, si oui on le joue et on change de joueur
+    public void jouerUnCoup(Joueur joueur) {
         boolean coupValide = false;
         while(!coupValide) {
             String coup = ihm.demanderCoup(joueurActuel);
-            if (coup.length() == 2){
-                int colonne;
-                int ligne;
+            if (coup.equals("P")) {
+                if (!peutJouer(joueurActuel)) {
+                    coupValide = true;
+                    joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+                } else {
+                    ihm.afficherPassageImpossible();
+                }
+            }
+            else if (coup.length() == 2) {
+                int colonne = coup.charAt(0) - 'A';
+                int ligne = coup.charAt(1) - '1';
                 String couleur = joueurActuel.getCouleur();
 
-                if (plateau.verifCoup(ligne, colonne, couleur)){
+                if (plateau.verifCoup(ligne, colonne, couleur)) {
                     coupValide = true;
                     plateau.jouerCoup(ligne, colonne, couleur);
                     joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
@@ -82,18 +103,18 @@ public class Controleur {
                 else {
                     ihm.afficherCoupInvalide();
                 }
-
             }
-            else{
+            else {
                 ihm.formatCoupInvalide();
             }
         }
     }
 
+    // Va chercher dans le modèle si un coup est légal
     private boolean peutJouer(Joueur joueurActuel) {
-        for(int i; i < plateau.getTaille(); i++){
+        for(int i = 0; i < plateau.getTaille(); i++){
             for(int j = 0; j < plateau.getTaille(); j++){
-                if (plateau.verifCoup(i, j, joueurActuel){
+                if (plateau.verifCoup(i, j, joueurActuel.getCouleur())){
                     return true;
                 }
             }
@@ -101,20 +122,25 @@ public class Controleur {
         return false;
     }
 
-    //private boolean peutPasser(Joueur joueurActuel) ?? Ou bien tu check ta verif coup le fait de passer son tour aussi ?
-
+    // Utilise le fait qu'aucun coup n'est légal pour terminer la partie
     private boolean estPartieTerminee() {
         return !peutJouer(joueur1) && !peutJouer(joueur2);
     }
 
+
+    // Assigne dans un tableau taille 2 le score du joueur noir et du blanc et assigne les vainqueurs si le score de
+    // l'un dépasse celui de l'autre, sinon égalité. Incrémente les victoires au passage
     private void terminerPartie() {
         int[] scores = plateau.compterPion();
+        scoreJoueur1 = scores[0];  // Score des noirs
+        scoreJoueur2 = scores[1];  // Score des blancs
+        
         ihm.afficherScoreFinal(joueur1, scoreJoueur1, joueur2, scoreJoueur2);
 
-        if(scores[0]>scores[1]){
+        if (scoreJoueur1 > scoreJoueur2) {
             victoireJoueur1++;
             ihm.afficherVainqueur(joueur1);
-        } else if (scores[0]<scores[1]) {
+        } else if (scoreJoueur1 < scoreJoueur2) {
             victoireJoueur2++;
             ihm.afficherVainqueur(joueur2);
         } else {

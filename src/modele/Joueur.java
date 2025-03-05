@@ -13,4 +13,8 @@ public class Joueur {
         return couleur;
     }
 
+    public String toString() {
+        return nom;
+    }
+
 }

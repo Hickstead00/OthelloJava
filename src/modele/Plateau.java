@@ -2,7 +2,7 @@ package modele;
 
 public class Plateau {
     private String[][] plateau;
-    private static final int TAILLE_PLATEAU = 8;
+    private static final int TAILLE_PLATEAU = 8; // doit être pair pour que le placement de départ soit correct
     private final String couleurNoire = "\u26AB";
     private final String couleurBlanc = "\u26AA";
     private final String caseVide = "\uD83D\uDFE9";
@@ -28,6 +28,8 @@ public class Plateau {
         return couleurBlanc;
     }
 
+    // Initialise le plateau à cases vides puis en determine le millieu de manière a ce que l'on ai qu'à changer le
+    // parametre de la taille du plateau dans toute l'application
     private void initialiser(){
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
             for (int j = 0; j < TAILLE_PLATEAU; j++) {
@@ -35,21 +37,23 @@ public class Plateau {
             }
         }
 
-        plateau[3][3] = couleurBlanc;
-        plateau[3][4] = couleurNoire;
-        plateau[4][3] = couleurNoire;
-        plateau[4][4] = couleurBlanc;
+        int millieu = TAILLE_PLATEAU / 2;
+        plateau[millieu-1][millieu-1] = couleurBlanc;
+        plateau[millieu-1][millieu] = couleurNoire;
+        plateau[millieu][millieu-1] = couleurNoire;
+        plateau[millieu][millieu] = couleurBlanc;
     }
 
+    // Verification de la légalité du coup selon les règles de l'othello, case vide, adjacence à une couleur adverse..
     public boolean verifCoup(int ligne, int colonne, String couleur) {
-        // La case doit être vide !
+        // La case doit être vide et dans les limites
         if (!estDansLesLimites(ligne, colonne) || !plateau[ligne][colonne].equals(caseVide)) {
             return false;
         }
         
         String couleurAdver = (couleur.equals(couleurNoire)) ? couleurBlanc : couleurNoire;
         
-        // Pour chaque direction
+        // Pour chaque direction on va vérifier les lignes/colonne/diagonales
         int[][] directions = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};
         for (int[] direction : directions) {
             if (verifLigneCoup(ligne, colonne, direction[0], direction[1], couleurAdver)){
@@ -59,48 +63,54 @@ public class Plateau {
         return false;
     }
 
-    public boolean verifLigneCoup(int ligne,int colonne, int dirX, int dirY, String couleurAdver) {
-        if(!estDansLesLimites(ligne + dirX, colonne + dirY)) {
+    // Méthode appelée pour chaque ligne colonne et diagonale afin de vérifier s'il existe au minimum un pion adverse
+    // a capturer si oui renvoie true sinon false
+    public boolean verifLigneCoup(int ligne, int colonne, int dirX, int dirY, String couleurAdver) {
+        int nextLigne = ligne + dirX;
+        int nextColonne = colonne + dirY;
+        
+        if (!estDansLesLimites(nextLigne, nextColonne) || !plateau[nextLigne][nextColonne].equals(couleurAdver)) {
             return false;
         }
 
-        int currentLigne = ligne + dirX;
-        int currentColonne = colonne + dirY;
-        boolean pionAdversePresent = false;
-        String couleurActuelle = (couleurAdver.equals(couleurNoire) ? couleurBlanc : couleurNoire);
+        String couleurActuelle = (couleurAdver.equals(couleurNoire)) ? couleurBlanc : couleurNoire;
+        int currentLigne = nextLigne + dirX;
+        int currentColonne = nextColonne + dirY;
 
-        while(estDansLesLimites(currentLigne, currentColonne)){
+        // tant que l'on est dans les limites on regarde si la case adjacente n'est pas vide, puis on parcours jusqu'à
+        // trouver une case de notre couleur, si c'est le cas renvoie true sinon faux (pas de pions adverses à capturer)
+        while (estDansLesLimites(currentLigne, currentColonne)) {
             String caseCourante = plateau[currentLigne][currentColonne];
-            if (caseCourante.equals(caseVide)){
+            if (caseCourante.equals(caseVide)) {
                 return false;
             }
-            if (caseCourante.equals(couleurAdver)){
-                pionAdversePresent = true;
+            if (caseCourante.equals(couleurActuelle)) {
+                return true;
             }
-            else if (caseCourante.equals(couleurActuelle)){
-                return pionAdversePresent;
-            }
-            currentLigne = currentLigne + dirX;
-            currentColonne = currentColonne + dirY;
+            currentLigne += dirX;
+            currentColonne += dirY;
         }
-    return false;
-
+        return false;
     }
 
+
+    // Pose un pion et appelle retournerPionDirection pour toutes les directions possibles
     public void jouerCoup(int ligne, int colonne, String couleur) {
-        // D'abord on place le pion
+        // On place le pion d'abord
         plateau[ligne][colonne] = couleur;
-        
-        // Pour chaque direction possible
+
+        // Puis pour chaque direction possible on apelle retournerPionDirection
         int[][] directions = {{-1,-1},{-1,0},{-1,1},{0,-1},{0,1},{1,-1},{1,0},{1,1}};
         for (int[] dir : directions) {
             retournerPionsDirection(ligne, colonne, dir[0], dir[1], couleur);
         }
     }
-
+    
+    // Retourne tout les pions possibles dans chaque direction ou l'on rencontre un pion de couleur opposé
+    // s'arrête au premier.
     private void retournerPionsDirection(int ligne, int colonne, int dirX, int dirY, String couleur) {
         String couleurAdver = (couleur.equals(couleurNoire)) ? couleurBlanc : couleurNoire;
-        
+
         // Si on ne peut pas capturer dans cette direction, on sort
         if (!verifLigneCoup(ligne, colonne, dirX, dirY, couleurAdver)) {
             return;
@@ -110,8 +120,7 @@ public class Plateau {
         int currentLigne = ligne + dirX;
         int currentColonne = colonne + dirY;
         
-        while (estDansLesLimites(currentLigne, currentColonne) && 
-               plateau[currentLigne][currentColonne].equals(couleurAdver)) {
+        while (estDansLesLimites(currentLigne, currentColonne) && plateau[currentLigne][currentColonne].equals(couleurAdver)) {
             // On retourne le pion
             plateau[currentLigne][currentColonne] = couleur;
             currentLigne += dirX;
@@ -119,6 +128,7 @@ public class Plateau {
         }
     }
 
+    // Compte les pions de chaque couleur et retourne un tableau taille 2 avec 0 : Joueur noir et 1 : Joueur blanc
     public int[] compterPion(){
         int [] scores = new int[2];
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
@@ -137,13 +147,6 @@ public class Plateau {
     public boolean estDansLesLimites(int ligne, int colonne) {
         return ligne >=0 && ligne < TAILLE_PLATEAU && colonne >=0 && colonne < TAILLE_PLATEAU;
     }
-
-    // ta méthode VerifCoup
-    // ta méthode VerifLigne
-    // ta méthode retournerPion
-    // Une méthode JouerCoup qui fait appel à retournerPion et verif direction en parcourant le plateau sur chaque verif direction et si c'est ok retourne les pions ?
-    // Une methode compterPion pour compter les pions de chaque couleur pour le calcul du score
-
 
 }
 
