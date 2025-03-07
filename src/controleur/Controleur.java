@@ -10,10 +10,7 @@ public class Controleur {
     private Joueur joueur1;
     private Joueur joueur2;
     private Joueur joueurActuel;
-    private int scoreJoueur1;
-    private int scoreJoueur2;
-    private int victoireJoueur1;
-    private int victoireJoueur2;
+
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
@@ -48,7 +45,7 @@ public class Controleur {
             }
         }
 
-        ihm.afficherStatistiques(joueur1, victoireJoueur1, joueur2, victoireJoueur2);
+        ihm.afficherStatistiques(joueur1, joueur2);
     }
 
     // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si
@@ -128,22 +125,20 @@ public class Controleur {
     }
 
 
-    // Assigne dans un tableau taille 2 le score du joueur noir et du blanc et assigne les vainqueurs si le score de
-    // l'un dépasse celui de l'autre, sinon égalité. Incrémente les victoires au passage
+    // Assigne aux variable J1 J2 les scores de chaque joueurs calculés dans le plateau et incrémente leur compteur de
+    // victoire personelles si necessaire ou un statique égalité commun à la classe si égalité.
     private void terminerPartie() {
-        int[] scores = plateau.compterPion();
-        scoreJoueur1 = scores[0];  // Score des noirs
-        scoreJoueur2 = scores[1];  // Score des blancs
+        int scoreJ1 = plateau.getScoreNoir();
+        int scoreJ2 = plateau.getScoreBlanc();
         
-        ihm.afficherScoreFinal(joueur1, scoreJoueur1, joueur2, scoreJoueur2);
+        ihm.afficherScoreFinal(joueur1, scoreJ1, joueur2, scoreJ2);
 
-        if (scoreJoueur1 > scoreJoueur2) {
-            victoireJoueur1++;
-            ihm.afficherVainqueur(joueur1);
-        } else if (scoreJoueur1 < scoreJoueur2) {
-            victoireJoueur2++;
-            ihm.afficherVainqueur(joueur2);
+        Joueur vainqueur = plateau.determinerVainqueur(joueur1, joueur2);
+        if (vainqueur != null) {
+            vainqueur.incrementerVictoires();
+            ihm.afficherVainqueur(vainqueur);
         } else {
+            Joueur.incrementerEgalites();
             ihm.afficherEgalite();
         }
     }

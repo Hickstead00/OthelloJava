@@ -6,6 +6,8 @@ public class Plateau {
     private final String couleurNoire = "\u26AB";
     private final String couleurBlanc = "\u26AA";
     private final String caseVide = "\uD83D\uDFE9";
+    private int scoreNoir;
+    private int scoreBlanc;
 
     public Plateau() {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
@@ -146,6 +148,41 @@ public class Plateau {
 
     public boolean estDansLesLimites(int ligne, int colonne) {
         return ligne >=0 && ligne < TAILLE_PLATEAU && colonne >=0 && colonne < TAILLE_PLATEAU;
+    }
+
+    // Parcours le plateau et met jour les scores de chaque couleur
+    public void mettreAJourScores() {
+        scoreNoir = 0;
+        scoreBlanc = 0;
+        for (int i = 0; i < TAILLE_PLATEAU; i++) {
+            for (int j = 0; j < TAILLE_PLATEAU; j++) {
+                if (plateau[i][j].equals(couleurNoire)) {
+                    scoreNoir++;
+                } else if (plateau[i][j].equals(couleurBlanc)) {
+                    scoreBlanc++;
+                }
+            }
+        }
+    }
+
+    public int getScoreNoir() {
+        mettreAJourScores();
+        return scoreNoir;
+    }
+
+    public int getScoreBlanc() {
+        mettreAJourScores();
+        return scoreBlanc;
+    }
+
+    public Joueur determinerVainqueur(Joueur joueurNoir, Joueur joueurBlanc) {
+        mettreAJourScores();
+        if (scoreNoir > scoreBlanc) {
+            return joueurNoir;
+        } else if (scoreBlanc > scoreNoir) {
+            return joueurBlanc;
+        }
+        return null; // En cas d'égalité
     }
 
 }

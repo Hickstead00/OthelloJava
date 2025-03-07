@@ -1,7 +1,6 @@
 package vue;
 
 import modele.Joueur;
-import modele.Plateau;
 
 import java.util.Scanner;
 
@@ -67,9 +66,10 @@ public class Ihm {
         System.out.println("Veuillez répondre par O (Oui) ou N (Non)");
     }
 
-    public void afficherStatistiques(Joueur joueur1, int victoireJoueur1, Joueur joueur2, int victoireJoueur2) {
-        System.out.println("Joueur1 : " + joueur1 +"." + " Nb victoires : " + victoireJoueur1);
-        System.out.println("Joueur2 : " + joueur2 +"." + " Nb victoires : " + victoireJoueur2);
+    public void afficherStatistiques(Joueur joueur1, Joueur joueur2) {
+        System.out.println("Joueur1 : " + joueur1 + "." + " Nb victoires : " + joueur1.getNbVictoires());
+        System.out.println("Joueur2 : " + joueur2 + "." + " Nb victoires : " + joueur2.getNbVictoires());
+        System.out.println("Nombre d'égalités : " + Joueur.getNbEgalites());
     }
 
     public void afficherPassageImpossible() {
