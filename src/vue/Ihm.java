@@ -18,7 +18,7 @@ public class Ihm {
     }
 
     public String demanderCoup(Joueur joueur) {
-        System.out.printf("%s, entrez votre coup (ex : A1) ou 'P' pour passer : ", joueur);
+        System.out.printf("%s, entrez votre coup (ex : 1 C) ou 'P' pour passer : ", joueur);
         return sc.nextLine().toUpperCase();
     }
 

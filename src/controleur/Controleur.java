@@ -90,9 +90,9 @@ public class Controleur {
                     ihm.afficherPassageImpossible();
                 }
             }
-            else if (coup.length() == 2) {
-                int colonne = coup.charAt(0) - 'A';
-                int ligne = coup.charAt(1) - '1';
+            else if (coup.length() == 3 && coup.charAt(1) == ' ') {
+                int ligne = coup.charAt(0) - '1';
+                int colonne = coup.charAt(2) - 'A';
                 String couleur = joueurActuel.getCouleur();
 
                 if (plateau.verifCoup(ligne, colonne, couleur)) {
