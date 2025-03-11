@@ -1,7 +1,6 @@
 package modele;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Plateau {
     private final String[][] plateau;

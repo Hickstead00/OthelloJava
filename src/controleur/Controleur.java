@@ -12,11 +12,9 @@ public class Controleur {
     private Joueur joueur1;
     private Joueur joueur2;
     private Joueur joueurActuel;
+    private boolean jouerContreIA = false;
     private Random randomInt;
 
-    public Joueur getJoueurActuel(){
-        return joueurActuel;
-    }
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
@@ -24,35 +22,88 @@ public class Controleur {
         this.randomInt = new Random();
     }
 
+    public void initPartie(){
+        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
+        if(ihm.demanderJouerContreIA().equals("O")){
+            this.joueur2 = new Joueur("Ia", plateau.getCouleurBlanc());
+            joueur2.setEstUneIA();
+            jouerContreIA = true;
+        }
+        else {
+            this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());}
+        joueurActuel = joueur1;
+
+    }
+
+
+
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
     // lorsque jouerPartie() se résoud
     public void jouer() {
-        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
-        this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());
-        joueurActuel = joueur1;
-
+        initPartie();
         boolean continuerJeu = true;
         while (continuerJeu) {
-            jouerPartie();
-            
-            String reponse;
-            boolean reponseValide = false;
-            while (!reponseValide) {
-                reponse = ihm.demanderNouvellePartie();
-                if (reponse.equals("O")) {
-                    reponseValide = true;
-                    this.plateau = new Plateau();
-                    joueurActuel = joueur1;
-                } else if (reponse.equals("N")) {
-                    reponseValide = true;
-                    continuerJeu = false;
-                } else {
-                    ihm.afficherReponseInvalide();
+            if (jouerContreIA) {
+                jouerPartieIA();
+            } else {
+                jouerPartie();
+
+                String reponse;
+                boolean reponseValide = false;
+                while (!reponseValide) {
+                    reponse = ihm.demanderNouvellePartie();
+                    if (reponse.equals("O")) {
+                        reponseValide = true;
+                        this.plateau = new Plateau();
+                        joueurActuel = joueur1;
+                    } else if (reponse.equals("N")) {
+                        reponseValide = true;
+                        continuerJeu = false;
+                    } else {
+                        ihm.afficherReponseInvalide();
+                    }
                 }
             }
         }
 
         ihm.afficherStatistiques(joueur1, joueur2);
+    }
+
+    public void jouerPartieIA(){
+        while(!estPartieTerminee()){
+            ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+            if(peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
+                jouerIa();
+                ihm.afficherCoupIA();
+                joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+            }
+            else if (peutJouer(joueurActuel)){
+                jouerUnCoup(joueurActuel);
+            }
+            else if (!peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
+                ihm.afficherIaPasse();
+                joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+            }
+            else {
+                ihm.afficherAucunCoupPossible(joueurActuel);
+                String reponse = ihm.demanderCoup(joueurActuel);
+                if (reponse.equals("P")) {
+                    joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+                } else {
+                    ihm.afficherDoitPasser();
+                }
+
+            }
+        }
+        ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+        terminerPartie();
+    }
+
+    public void jouerIa(){
+        String couleurIa=joueurActuel.getCouleur();
+        int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
+        int[] coor = plateau.coupPossible(couleurIa).get(n);
+        plateau.jouerCoup(coor[0],coor[1],couleurIa);
     }
 
     // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si
@@ -79,12 +130,6 @@ public class Controleur {
         terminerPartie();
     }
 
-    public void jouerIa(){
-        String couleurIa=joueurActuel.getCouleur();
-        int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
-        int[] coor = plateau.coupPossible(couleurIa).get(n);
-        plateau.jouerCoup(coor[0],coor[1],couleurIa);
-    }
     // Gère la syntaxe du coup, tant que le coup n'est pas valide on le demande. Si le joueur demande a passer et n'a
     // pas le droit alors on renvoie une erreur. Sinon on prend le coup et on vérifie sa syntaxe. Si sa syntaxe est
     // valide on va chercher dans le modèle si le coup est légal, si oui on le joue et on change de joueur
@@ -143,7 +188,7 @@ public class Controleur {
     private void terminerPartie() {
         int scoreJ1 = plateau.getScoreNoir();
         int scoreJ2 = plateau.getScoreBlanc();
-        
+
         ihm.afficherScoreFinal(joueur1, scoreJ1, joueur2, scoreJ2);
 
         Joueur vainqueur = plateau.determinerVainqueur(joueur1, joueur2);
