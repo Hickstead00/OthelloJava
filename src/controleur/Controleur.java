@@ -65,7 +65,21 @@ public class Controleur {
                 }
             } else {
                 jouerPartie();
-                // ... reste du code existant ...
+                String reponse;
+                boolean reponseValide = false;
+                while (!reponseValide) {
+                    reponse = ihm.demanderNouvellePartie();
+                    if (reponse.equals("O")) {
+                        reponseValide = true;
+                        this.plateau = new Plateau();
+                        joueurActuel = joueur1;
+                    } else if (reponse.equals("N")) {
+                        reponseValide = true;
+                        continuerJeu = false;
+                    } else {
+                        ihm.afficherReponseInvalide();
+                    }
+                }
             }
         }
         ihm.afficherStatistiques(joueur1, joueur2);
