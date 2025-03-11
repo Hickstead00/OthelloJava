@@ -4,17 +4,24 @@ import modele.Joueur;
 import vue.Ihm;
 import modele.Plateau;
 
+import java.util.Random;
+
 public class Controleur {
     private Ihm ihm;
     private Plateau plateau;
     private Joueur joueur1;
     private Joueur joueur2;
     private Joueur joueurActuel;
+    private Random randomInt;
 
+    public Joueur getJoueurActuel(){
+        return joueurActuel;
+    }
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
         this.plateau = new Plateau();
+        this.randomInt = new Random();
     }
 
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
@@ -72,6 +79,12 @@ public class Controleur {
         terminerPartie();
     }
 
+    public void jouerIa(){
+        String couleurIa=joueurActuel.getCouleur();
+        int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
+        int[] coor = plateau.coupPossible(couleurIa).get(n);
+        plateau.jouerCoup(coor[0],coor[1],couleurIa);
+    }
     // Gère la syntaxe du coup, tant que le coup n'est pas valide on le demande. Si le joueur demande a passer et n'a
     // pas le droit alors on renvoie une erreur. Sinon on prend le coup et on vérifie sa syntaxe. Si sa syntaxe est
     // valide on va chercher dans le modèle si le coup est légal, si oui on le joue et on change de joueur
