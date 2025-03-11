@@ -4,48 +4,108 @@ import modele.Joueur;
 import vue.Ihm;
 import modele.Plateau;
 
+import java.util.Random;
+
 public class Controleur {
     private Ihm ihm;
     private Plateau plateau;
     private Joueur joueur1;
     private Joueur joueur2;
     private Joueur joueurActuel;
+    private boolean jouerContreIA = false;
+    private Random randomInt;
+    private int[] coor;
 
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
         this.plateau = new Plateau();
+        this.randomInt = new Random();
     }
+
+    public void initPartie(){
+        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
+        if(ihm.demanderJouerContreIA().equals("O")){
+            this.joueur2 = new Joueur("Ordinateur", plateau.getCouleurBlanc());
+            joueur2.setEstUneIA();
+            jouerContreIA = true;
+        }
+        else {
+            this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());}
+        joueurActuel = joueur1;
+
+    }
+
+
 
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
     // lorsque jouerPartie() se résoud
     public void jouer() {
-        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
-        this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());
-        joueurActuel = joueur1;
-
+        initPartie();
         boolean continuerJeu = true;
+        
         while (continuerJeu) {
-            jouerPartie();
-            
-            String reponse;
-            boolean reponseValide = false;
-            while (!reponseValide) {
-                reponse = ihm.demanderNouvellePartie();
-                if (reponse.equals("O")) {
-                    reponseValide = true;
-                    this.plateau = new Plateau();
-                    joueurActuel = joueur1;
-                } else if (reponse.equals("N")) {
-                    reponseValide = true;
-                    continuerJeu = false;
-                } else {
-                    ihm.afficherReponseInvalide();
+            if (jouerContreIA) {
+                jouerPartieIA();
+                // Ajout de la demande de nouvelle partie même après une partie contre l'IA
+                String reponse;
+                boolean reponseValide = false;
+                while (!reponseValide) {
+                    reponse = ihm.demanderNouvellePartie();
+                    if (reponse.equals("O")) {
+                        reponseValide = true;
+                        this.plateau = new Plateau();
+                        joueurActuel = joueur1;
+                    } else if (reponse.equals("N")) {
+                        reponseValide = true;
+                        continuerJeu = false;
+                    } else {
+                        ihm.afficherReponseInvalide();
+                    }
                 }
+            } else {
+                jouerPartie();
+                // ... reste du code existant ...
             }
         }
-
         ihm.afficherStatistiques(joueur1, joueur2);
+    }
+
+    public void jouerPartieIA(){
+        while(!estPartieTerminee()){
+            ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+            if(peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
+                jouerIa();
+                ihm.afficherCoupIa(coor);
+                joueurActuel =  (joueurActuel == joueur1) ? joueur2 : joueur1;
+            }
+            else if (peutJouer(joueurActuel)){
+                jouerUnCoup(joueurActuel);
+            }
+            else if (!peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
+                ihm.afficherIaPasse();
+                joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+            }
+            else {
+                ihm.afficherAucunCoupPossible(joueurActuel);
+                String reponse = ihm.demanderCoup(joueurActuel);
+                if (reponse.equals("P")) {
+                    joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+                } else {
+                    ihm.afficherDoitPasser();
+                }
+
+            }
+        }
+        ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+        terminerPartie();
+    }
+
+    public void jouerIa(){
+        String couleurIa=joueurActuel.getCouleur();
+        int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
+        this.coor = plateau.coupPossible(couleurIa).get(n);
+        plateau.jouerCoup(coor[0],coor[1],couleurIa);
     }
 
     // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si

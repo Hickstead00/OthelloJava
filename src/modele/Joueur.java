@@ -5,6 +5,7 @@ public class Joueur {
     private String couleur;
     private int nbVictoires;
     private static int nbEgalites = 0;  // Partagé entre tous les joueurs
+    private boolean estUneIA = false;
 
     public Joueur(String nom, String couleur) {
         this.nom = nom;
@@ -35,4 +36,13 @@ public class Joueur {
     public String toString() {
         return nom;
     }
+
+    public boolean getEstUneIA() {
+        return estUneIA;
+    }
+
+    public void setEstUneIA() {
+        this.estUneIA = true;
+    }
+
 }
