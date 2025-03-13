@@ -1,6 +1,7 @@
 package modele;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Plateau {
     private String[][] plateau;
@@ -203,6 +204,27 @@ public class Plateau {
         return null; // En cas d'égalité
     }
 
+
+    private boolean estCoin(int ligne, int colonne){ //vérifie si un pion est dans un coin
+        return (!(estDansLesLimites(ligne+1, colonne) && estDansLesLimites(ligne+1, colonne))||
+                (estDansLesLimites(ligne-1,colonne) && estDansLesLimites(ligne,colonne-1)) ||
+                (estDansLesLimites(ligne+1,colonne) && estDansLesLimites(ligne,colonne-1))||
+                (estDansLesLimites(ligne-1,colonne) && estDansLesLimites(ligne,colonne+1)));
+    }
+
+    private boolean estBord (int ligne, int colonne){ //vérifie si un coin est sur un bord
+        if (estCoin(ligne, colonne)) {
+            return false;
+        }
+        return ((estDansLesLimites(ligne+1,colonne) || estDansLesLimites(ligne-1,colonne) ||
+                estDansLesLimites(ligne,colonne+1) || estDansLesLimites(ligne,colonne-1)));
+    }
+
+    public TreeMap<String, Integer > arbreMinMax(){
+        TreeMap<String, Integer> arbre = new TreeMap<>();
+        return arbre;
+
+    }
 }
 
 
