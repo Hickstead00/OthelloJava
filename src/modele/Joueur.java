@@ -1,4 +1,5 @@
 package modele;
+import modele.ia.StrategieIA;
 
 public class Joueur {
     private String nom;
@@ -6,6 +7,7 @@ public class Joueur {
     private int nbVictoires;
     private static int nbEgalites = 0;  // Partagé entre tous les joueurs
     private boolean estUneIA = false;
+    private StrategieIA strategieIA;
 
     public Joueur(String nom, String couleur) {
         this.nom = nom;
@@ -43,6 +45,10 @@ public class Joueur {
 
     public void setEstUneIA() {
         this.estUneIA = true;
+    }
+
+    public void setStrategieIA(StrategieIA strategieIA) {
+        this.strategieIA = strategieIA;
     }
 
 }

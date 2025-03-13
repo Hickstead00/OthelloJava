@@ -1,6 +1,9 @@
 package controleur;
 
 import modele.Joueur;
+import modele.ia.StrategieIA;
+import modele.ia.StrategieAleatoire;
+import modele.ia.StrategieMiniMax;
 import vue.Ihm;
 import modele.Plateau;
 
@@ -27,13 +30,27 @@ public class Controleur {
         this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
         if(ihm.demanderJouerContreIA().equals("O")){
             this.joueur2 = new Joueur("Ordinateur", plateau.getCouleurBlanc());
-            joueur2.setEstUneIA();
+            StrategieIA strategieIA = choisirStrategieIa();
+            joueur2.setStrategieIA(strategieIA);
             jouerContreIA = true;
         }
         else {
             this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());}
         joueurActuel = joueur1;
 
+    }
+
+    private StrategieIA choisirStrategieIa(){
+        String choix = ihm.demanderChoisirIa();
+        switch(choix){
+            case "1":
+                return new StrategieAleatoire();
+            case "2":
+                return new StrategieMiniMax();
+            default:
+                return new StrategieAleatoire();
+
+        }
     }
 
 
@@ -117,9 +134,8 @@ public class Controleur {
 
     public void jouerIa(){
         String couleurIa=joueurActuel.getCouleur();
-        int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
-        this.coor = plateau.coupPossible(couleurIa).get(n);
-        plateau.jouerCoup(coor[0],coor[1],couleurIa);
+        this.coor = joueurActuel.calculerCoup(plateau);
+        plateau.jouerCoup(coor[0],coor[1],joueurActuel.getCouleur());
     }
 
     // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si
