@@ -1,6 +1,7 @@
 package modele;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Plateau {
     private final String[][] plateau;
