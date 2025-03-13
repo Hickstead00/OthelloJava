@@ -16,6 +16,15 @@ public class Plateau {
         initialiser();
     }
 
+    public Plateau(Plateau copie){
+        this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
+        for (int i = 0; i < TAILLE_PLATEAU; i++) {
+            for (int j = 0; j < TAILLE_PLATEAU; j++) {
+                this.plateau[i][j] = copie.plateau[i][j];
+            }
+        }
+    }
+
     public int getTaille() {
         return TAILLE_PLATEAU;
     }
