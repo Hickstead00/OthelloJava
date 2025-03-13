@@ -51,4 +51,7 @@ public class Joueur {
         this.strategieIA = strategieIA;
     }
 
+    public void calculerCoup(){
+    }
+
 }
