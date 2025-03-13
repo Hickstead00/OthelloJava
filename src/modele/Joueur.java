@@ -44,4 +44,13 @@ public class Joueur {
     public String toString() {
         return nom;
     }
+
+    public boolean getEstUneIA() {
+        return estUneIA;
+    }
+
+    public void setEstUneIA() {
+        this.estUneIA = true;
+    }
+
 }

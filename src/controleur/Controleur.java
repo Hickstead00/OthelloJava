@@ -14,6 +14,7 @@ public class Controleur {
     private Joueur joueurActuel;
     private boolean jouerContreIA = false;
     private Random randomInt;
+    private int[] coor;
 
 
     public Controleur(Ihm ihm) {
@@ -25,7 +26,7 @@ public class Controleur {
     public void initPartie(){
         this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
         if(ihm.demanderJouerContreIA().equals("O")){
-            this.joueur2 = new Joueur("Ia", plateau.getCouleurBlanc());
+            this.joueur2 = new Joueur("Ordinateur", plateau.getCouleurBlanc());
             joueur2.setEstUneIA();
             jouerContreIA = true;
         }
@@ -42,12 +43,11 @@ public class Controleur {
     public void jouer() {
         initPartie();
         boolean continuerJeu = true;
+        
         while (continuerJeu) {
             if (jouerContreIA) {
                 jouerPartieIA();
-            } else {
-                jouerPartie();
-
+                // Ajout de la demande de nouvelle partie même après une partie contre l'IA
                 String reponse;
                 boolean reponseValide = false;
                 while (!reponseValide) {
@@ -63,9 +63,11 @@ public class Controleur {
                         ihm.afficherReponseInvalide();
                     }
                 }
+            } else {
+                jouerPartie();
+                // ... reste du code existant ...
             }
         }
-
         ihm.afficherStatistiques(joueur1, joueur2);
     }
 
@@ -74,8 +76,8 @@ public class Controleur {
             ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
             if(peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
                 jouerIa();
-                ihm.afficherCoupIA();
-                joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
+                ihm.afficherCoupIa(coor);
+                joueurActuel =  (joueurActuel == joueur1) ? joueur2 : joueur1;
             }
             else if (peutJouer(joueurActuel)){
                 jouerUnCoup(joueurActuel);
@@ -102,7 +104,7 @@ public class Controleur {
     public void jouerIa(){
         String couleurIa=joueurActuel.getCouleur();
         int n=randomInt.nextInt(plateau.coupPossible(couleurIa).size());
-        int[] coor = plateau.coupPossible(couleurIa).get(n);
+        this.coor = plateau.coupPossible(couleurIa).get(n);
         plateau.jouerCoup(coor[0],coor[1],couleurIa);
     }
 
@@ -188,7 +190,7 @@ public class Controleur {
     private void terminerPartie() {
         int scoreJ1 = plateau.getScoreNoir();
         int scoreJ2 = plateau.getScoreBlanc();
-
+        
         ihm.afficherScoreFinal(joueur1, scoreJ1, joueur2, scoreJ2);
 
         Joueur vainqueur = plateau.determinerVainqueur(joueur1, joueur2);

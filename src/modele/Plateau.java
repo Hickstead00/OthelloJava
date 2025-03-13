@@ -1,10 +1,9 @@
 package modele;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class Plateau {
-    private final String[][] plateau;
+    private String[][] plateau;
     private static final int TAILLE_PLATEAU = 4; // doit être pair pour que le placement de départ soit correct
     private final String couleurNoire = "\u26AB";
     private final String couleurBlanc = "\u26AA";
@@ -67,18 +66,8 @@ public class Plateau {
         }
         return false;
     }
-    public ArrayList<int[]> coupPossible(String couleur){
-        ArrayList<int[]> listeCoup;
-        listeCoup = new ArrayList<>();
-        for (int i = 0; i < TAILLE_PLATEAU; i++) {
-            for (int j = 0; j < TAILLE_PLATEAU; j++) {
-                if (verifCoup(i,j,couleur)){
-                    listeCoup.add(new int[]{i,j});
-                }
-            }
-        }
-        return listeCoup;
-    }
+
+
 
 
     // Méthode appelée pour chaque ligne colonne et diagonale afin de vérifier s'il existe au minimum un pion adverse
@@ -109,6 +98,19 @@ public class Plateau {
             currentColonne += dirY;
         }
         return false;
+    }
+
+    public ArrayList<int[]> coupPossible(String couleur){
+        ArrayList<int[]> listeCoup;
+        listeCoup = new ArrayList<>();
+        for (int i = 0; i < TAILLE_PLATEAU; i++) {
+            for (int j = 0; j < TAILLE_PLATEAU; j++) {
+                if (verifCoup(i,j,couleur)){
+                    listeCoup.add(new int[]{i,j});
+                }
+            }
+        }
+        return listeCoup;
     }
 
 

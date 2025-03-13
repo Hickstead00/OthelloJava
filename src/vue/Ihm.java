@@ -83,15 +83,21 @@ public class Ihm {
     public void afficherDoitPasser() {
         System.out.println("Vous n'avez aucun coup possible, vous devez taper 'P' pour passer votre tour !");
     }
+
     public String demanderJouerContreIA(){
         System.out.println("Souhaitez vous jouer contre l'ordinateur ? (O/N) : ");
         return sc.nextLine().toUpperCase();
     }
 
     public void afficherIaPasse(){
-        System.out.println("L'IA passe son tour");
+        System.out.println("L'ordinateur passe son tour");
     }
-    public void afficherCoupIA(){
-        System.out.println("L'IA joue");
+
+    public void afficherCoupIa(int[] coordonnee){
+        // Conversion des coordonnées numériques en format "ligne colonne"
+        char colonne = (char)('A' + coordonnee[1]);  // 0 -> 'A', 1 -> 'B', etc.
+        int ligne = coordonnee[0] + 1;  // 0 -> 1, 1 -> 2, etc.
+        System.out.println("L'ordinateur joue le coup " + ligne + " " + colonne);
     }
+
 }
