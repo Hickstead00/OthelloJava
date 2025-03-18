@@ -214,6 +214,10 @@ public class Plateau {
     }
 
 
+    private boolean  partieFini() {
+        return (coupPossible(couleurBlanc).isEmpty() && coupPossible(couleurNoire).isEmpty());
+    }
+
     private boolean estCoin(int ligne, int colonne){ //vérifie si un pion est dans un coin
         return (!(estDansLesLimites(ligne+1, colonne) && estDansLesLimites(ligne+1, colonne))||
                 (estDansLesLimites(ligne-1,colonne) && estDansLesLimites(ligne,colonne-1)) ||
@@ -229,11 +233,53 @@ public class Plateau {
                 estDansLesLimites(ligne,colonne+1) || estDansLesLimites(ligne,colonne-1)));
     }
 
-    public TreeMap<String, Integer > arbreMinMax(){
+    private int fonctionEval(int ligne,int colonne,String couleur) {
+
+        if (partieFini()) {
+            if (couleur.equals(couleurNoire)) {
+                return -1000;
+            } else {
+                return 1000;
+            }
+        }
+        if (plateau[ligne][colonne].equals(couleur)) {
+
+            if (estBord(ligne, colonne)) {
+                return 11;
+            } else if (estCoin(ligne, colonne)) {
+                return 6;
+            }
+            return 1;
+
+        }
+        return 0;
+    }
+
+    private int evalPlateau(String couleur){
+        int score=0;
+        for (int i = 0; i < TAILLE_PLATEAU; i++) {
+            for (int j = 0; j < TAILLE_PLATEAU; j++) {
+                score+=fonctionEval(i, j, couleur);
+            }
+        }
+        return score;
+    }
+
+    public TreeMap<String, Integer> arbreMinMax(Plateau plateau1) {
+
+        Plateau plateau2= new Plateau(plateau1);
         TreeMap<String, Integer> arbre = new TreeMap<>();
-        return arbre;
+        ArrayList<int[]> coupJoueur = plateau2.coupPossible(couleurBlanc);
+        ArrayList<int[]> coupIA = plateau2.coupPossible(couleurNoire);
+
+
+
+
+
+
 
     }
+
 }
 
 
