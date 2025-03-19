@@ -39,7 +39,7 @@ public class Controleur {
         joueurActuel = joueur1;
 
     }
-
+/*
     private StrategieIA choisirStrategieIa(){
         String choix = ihm.demanderChoisirIa();
         switch(choix){
@@ -52,7 +52,7 @@ public class Controleur {
 
         }
     }
-
+*/
 
 
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie

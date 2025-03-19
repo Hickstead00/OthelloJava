@@ -1,6 +1,7 @@
 package modele;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 public class Plateau {
@@ -11,6 +12,7 @@ public class Plateau {
     private final String caseVide = "\uD83D\uDFE9";
     private int scoreNoir;
     private int scoreBlanc;
+    HashMap<String, Integer> arbre= new HashMap<>();
 
     public Plateau() {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
@@ -265,21 +267,62 @@ public class Plateau {
         return score;
     }
 
-    public TreeMap<String, Integer> arbreMinMax(Plateau plateau1) {
-
+    private static Plateau coupHypothetique (int ligne, int colonne,Plateau plateau1,String couleur){
         Plateau plateau2= new Plateau(plateau1);
-        TreeMap<String, Integer> arbre = new TreeMap<>();
-        ArrayList<int[]> coupJoueur = plateau2.coupPossible(couleurBlanc);
-        ArrayList<int[]> coupIA = plateau2.coupPossible(couleurNoire);
-
-
-
-
-
-
-
+        plateau2.jouerCoup(ligne,colonne,couleur);
+        return plateau2;
     }
 
+    private static int minMax(Plateau plateau,String couleurO,int profondeur,boolean Max) {
+        if (profondeur == 0) return plateau.evalPlateau(couleurO);  /* si on arrive à une feuille return eval des pions du plateau pour l'ordi */
+        ArrayList<int[]> coupJoueur = plateau.coupPossible(couleurO);
+
+        if (coupJoueur.size() == 0) {/* si il n'y a pas de coup possible return eval des pions du plateau pour l'ordi*/
+            return plateau.evalPlateau(couleurO);
+        }
+        String couleurAdversaire = (couleurO.equals(plateau.getCouleurNoire())) ? plateau.getCouleurBlanc() : plateau.getCouleurNoire();
+        /* change la couleur et donc le joueur quand on applique au fils du noeud */
+
+        int valMax = 0; /* init de l'eval max à 0*/
+
+        for (int[] coup : coupJoueur) {
+            Plateau futurPlateau = coupHypothetique(coup[0], coup[1], plateau, couleurO); /* creation du plateau hypothétique avec le coup possible choisi*/
+            int val = minMax(futurPlateau, couleurAdversaire, profondeur - 1, !Max); /* recupere la valeur appliquer aux fils avec la couleur inversée*/
+            if (Max) {/* update de la meilleur valeur*/
+                valMax = Math.max(val,valMax);
+            }
+            else{valMax = Math.min(val,valMax);}
+            plateau.addArbre(coup, val);
+        }
+        return valMax;
+    }
+
+    public int[] meilleurCoupMinMax(Plateau plateau,String couleur,int profondeur){
+        int meilleurScore = 0;
+        int[] meilleurCoup = new int[2];
+        ArrayList<int[]> coup = plateau.coupPossible(couleur);
+
+        for (int[] c: coup) {
+            Plateau futurPlateau = coupHypothetique(c[0], c[1], plateau, couleur);
+            int val = minMax(futurPlateau,couleur,profondeur -1,false);
+
+            if (val> meilleurScore) {
+                meilleurScore = val;
+                meilleurCoup[0] = c[0];
+                meilleurCoup[1] = c[1];
+            }
+        }
+        return meilleurCoup;
+    }
+
+
+    public HashMap<String, Integer> getArbre(){
+        return arbre;
+    }
+    public void addArbre(int[] coup,int point){
+        String key = coup[0] + "," + coup[1];
+        arbre.put(key, point);
+    }
 }
 
 
