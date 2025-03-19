@@ -47,19 +47,12 @@ public class Joueur {
         return nom;
     }
 
-    public boolean getEstUneIA() {
-        return estUneIA;
-    }
-
-    public void setEstUneIA() {
-        this.estUneIA = true;
-    }
-
     public void setStrategieIA(StrategieIA strategieIA) {
         this.strategieIA = strategieIA;
     }
 
-    public void calculerCoup(){
+    public StrategieIA getStrategieIA() {
+        return strategieIA;
     }
 
 }

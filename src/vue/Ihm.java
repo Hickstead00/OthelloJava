@@ -100,4 +100,11 @@ public class Ihm {
         System.out.println("L'ordinateur joue le coup " + ligne + " " + colonne);
     }
 
+    public String demanderChoisirIa(){
+        System.out.println("Veuillez choisir votre modèle d'IA : ");
+        System.out.println("1 : IA Aléatoire (moyen)");
+        System.out.println("2 : IA MiniMax (difficile)");
+        return sc.nextLine().toUpperCase();
+    }
+
 }

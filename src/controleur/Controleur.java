@@ -7,7 +7,6 @@ import modele.ia.StrategieMiniMax;
 import vue.Ihm;
 import modele.Plateau;
 
-import java.util.Random;
 
 public class Controleur {
     private Ihm ihm;
@@ -16,14 +15,12 @@ public class Controleur {
     private Joueur joueur2;
     private Joueur joueurActuel;
     private boolean jouerContreIA = false;
-    private Random randomInt;
     private int[] coor;
 
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
         this.plateau = new Plateau();
-        this.randomInt = new Random();
     }
 
     public void initPartie(){
@@ -32,6 +29,7 @@ public class Controleur {
             this.joueur2 = new Joueur("Ordinateur", plateau.getCouleurBlanc());
             StrategieIA strategieIA = choisirStrategieIa();
             joueur2.setStrategieIA(strategieIA);
+            joueur2.setEstUneIA();
             jouerContreIA = true;
         }
         else {
@@ -39,7 +37,7 @@ public class Controleur {
         joueurActuel = joueur1;
 
     }
-/*
+
     private StrategieIA choisirStrategieIa(){
         String choix = ihm.demanderChoisirIa();
         switch(choix){
@@ -52,7 +50,7 @@ public class Controleur {
 
         }
     }
-*/
+
 
 
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
@@ -134,7 +132,7 @@ public class Controleur {
 
     public void jouerIa(){
         String couleurIa=joueurActuel.getCouleur();
-        this.coor = joueurActuel.calculerCoup(plateau);
+        this.coor = joueurActuel.getStrategieIA().calculerCoup(plateau, couleurIa);
         plateau.jouerCoup(coor[0],coor[1],joueurActuel.getCouleur());
     }
 
