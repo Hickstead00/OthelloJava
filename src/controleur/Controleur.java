@@ -58,7 +58,7 @@ public class Controleur {
     public void jouer() {
         initPartie();
         boolean continuerJeu = true;
-
+        
         while (continuerJeu) {
             if (jouerContreIA) {
                 jouerPartieIA();
@@ -218,7 +218,7 @@ public class Controleur {
     private void terminerPartie() {
         int scoreJ1 = plateau.getScoreNoir();
         int scoreJ2 = plateau.getScoreBlanc();
-
+        
         ihm.afficherScoreFinal(joueur1, scoreJ1, joueur2, scoreJ2);
 
         Joueur vainqueur = plateau.determinerVainqueur(joueur1, joueur2);

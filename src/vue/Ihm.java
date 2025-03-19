@@ -1,7 +1,6 @@
 package vue;
 
 import modele.Joueur;
-import modele.Plateau;
 
 import java.util.Scanner;
 
@@ -18,7 +17,7 @@ public class Ihm {
     }
 
     public String demanderCoup(Joueur joueur) {
-        System.out.printf("%s, entrez votre coup (ex : A1) ou 'P' pour passer : ", joueur);
+        System.out.printf("%s, entrez votre coup (ex : 1 C) ou 'P' pour passer : ", joueur);
         return sc.nextLine().toUpperCase();
     }
 
@@ -67,9 +66,10 @@ public class Ihm {
         System.out.println("Veuillez répondre par O (Oui) ou N (Non)");
     }
 
-    public void afficherStatistiques(Joueur joueur1, int victoireJoueur1, Joueur joueur2, int victoireJoueur2) {
-        System.out.println("Joueur1 : " + joueur1 +"." + " Nb victoires : " + victoireJoueur1);
-        System.out.println("Joueur2 : " + joueur2 +"." + " Nb victoires : " + victoireJoueur2);
+    public void afficherStatistiques(Joueur joueur1, Joueur joueur2) {
+        System.out.println("Joueur1 : " + joueur1 + "." + " Nb victoires : " + joueur1.getNbVictoires());
+        System.out.println("Joueur2 : " + joueur2 + "." + " Nb victoires : " + joueur2.getNbVictoires());
+        System.out.println("Nombre d'égalités : " + Joueur.getNbEgalites());
     }
 
     public void afficherPassageImpossible() {
@@ -83,4 +83,28 @@ public class Ihm {
     public void afficherDoitPasser() {
         System.out.println("Vous n'avez aucun coup possible, vous devez taper 'P' pour passer votre tour !");
     }
+
+    public String demanderJouerContreIA(){
+        System.out.println("Souhaitez vous jouer contre l'ordinateur ? (O/N) : ");
+        return sc.nextLine().toUpperCase();
+    }
+
+    public void afficherIaPasse(){
+        System.out.println("L'ordinateur passe son tour");
+    }
+
+    public void afficherCoupIa(int[] coordonnee){
+        // Conversion des coordonnées numériques en format "ligne colonne"
+        char colonne = (char)('A' + coordonnee[1]);  // 0 -> 'A', 1 -> 'B', etc.
+        int ligne = coordonnee[0] + 1;  // 0 -> 1, 1 -> 2, etc.
+        System.out.println("L'ordinateur joue le coup " + ligne + " " + colonne);
+    }
+
+    public String demanderChoisirIa(){
+        System.out.println("Veuillez choisir votre modèle d'IA : ");
+        System.out.println("1 : IA Aléatoire (moyen)");
+        System.out.println("2 : IA MiniMax (difficile)");
+        return sc.nextLine().toUpperCase();
+    }
+
 }
