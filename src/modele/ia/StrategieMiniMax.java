@@ -9,7 +9,7 @@ public class StrategieMiniMax implements StrategieIA {
 
     private HashMap<String, Integer> arbre = new HashMap<>();
     private final int SCORE_VICTOIRE = 1000;
-    private final int PROFONDEUR_MAX = 3; // Profondeur de recherche par défaut de l'algo
+    private final int PROFONDEUR_MAX = 5; // Profondeur de recherche par défaut de l'algo
 
     @Override
     public int[] calculerCoup(Plateau plateau, String couleur) {
@@ -146,7 +146,7 @@ public class StrategieMiniMax implements StrategieIA {
             return null;
         }
 
-        int[] meilleurCoup = null;
+        int[] meilleurCoup = {0,0};
         int meilleurScore = Integer.MIN_VALUE;
 
         for (int[] coup : coupsPossibles) {
@@ -156,10 +156,14 @@ public class StrategieMiniMax implements StrategieIA {
             String key = coup[0] + "," + coup[1];
             arbre.put(key, score);
 
+
+
             if (score > meilleurScore) {
                 meilleurScore = score;
                 meilleurCoup = coup;
             }
+            System.out.println(arbre.get(key)+":"+key);
+
         }
 
         return meilleurCoup;
