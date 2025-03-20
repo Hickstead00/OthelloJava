@@ -3,11 +3,9 @@ package modele.ia;
 import modele.Plateau;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class StrategieMiniMax implements StrategieIA {
 
-    private HashMap<String, Integer> arbre = new HashMap<>();
     private final int SCORE_VICTOIRE = 1000;
     private final int PROFONDEUR_MAX = 3; // Profondeur de recherche par défaut de l'algo
 
@@ -16,10 +14,6 @@ public class StrategieMiniMax implements StrategieIA {
         return meilleurCoupMinMax(plateau, couleur, PROFONDEUR_MAX);
     }
 
-    @Override
-    public String getNom() {
-        return "MiniMax";
-    }
 
     private static boolean estCoin(int ligne, int colonne, int taille) {
         return (ligne == 0 && colonne == 0) ||
@@ -153,9 +147,6 @@ public class StrategieMiniMax implements StrategieIA {
             Plateau nouveauPlateau = coupHypothetique(coup[0], coup[1], plateau, couleur);
             int score = minMax(nouveauPlateau, couleur, profondeur - 1, false);
 
-            String key = coup[0] + "," + coup[1];
-            arbre.put(key, score);
-
             if (score > meilleurScore) {
                 meilleurScore = score;
                 meilleurCoup = coup;
@@ -165,15 +156,6 @@ public class StrategieMiniMax implements StrategieIA {
         return meilleurCoup;
     }
 
-
-    public HashMap<String, Integer> getArbre() {
-        return arbre;
-    }
-
-    public void addArbre(int[] coup, int point) {
-        String key = coup[0] + "," + coup[1];
-        arbre.put(key, point);
-    }
 
     private boolean estPartieTerminee(Plateau plateau) {
         String couleurNoire = plateau.getCouleurNoire();

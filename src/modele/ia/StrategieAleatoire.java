@@ -10,18 +10,13 @@ public class StrategieAleatoire implements StrategieIA {
     @Override
     public int[] calculerCoup(Plateau plateau, String couleur) {
         ArrayList<int[]> coupsPossibles = plateau.coupPossible(couleur);
-        
+
         if (coupsPossibles.isEmpty()) {
             return null;
         }
-        
+
         // Choisir un coup aléatoire parmi les coups possibles
         int indiceAleatoire = random.nextInt(coupsPossibles.size());
         return coupsPossibles.get(indiceAleatoire);
-    }
-    
-    @Override
-    public String getNom() {
-        return "Aléatoire";
     }
 }
