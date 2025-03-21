@@ -69,24 +69,29 @@ public class StrategieMiniMax implements StrategieIA {
         String couleurAdversaire = (couleur.equals(plateau.getCouleurNoire())) ?
                 plateau.getCouleurBlanc() : plateau.getCouleurNoire();
 
-        for (int i = 0; i < taille; i++) {
-            for (int j = 0; j < taille; j++) {
-                if (etatPlateau[i][j].equals(couleur)) {
-                    if (estCoin(i, j, taille)) {
-                        score += 10;
-                    } else if (estBord(i, j, taille)) {
+        for (int i = 0; i < taille; i++)
+        {
+            for (int j = 0; j < taille; j++)
+            {
+                if (etatPlateau[i][j].equals(couleur))
+                {
+                    if (estCoin(i, j, taille))
+                    {
+                        score += 11;
+                    } else if (estBord(i, j, taille))
+                    {
                         score += 3;
                     } else {
                         score += 1;
                     }
-                } else if (etatPlateau[i][j].equals(couleurAdversaire)) {
+                /*} else if (etatPlateau[i][j].equals(couleurAdversaire)) {
                     if (estCoin(i, j, taille)) {
-                        score -= 10;
+                        score -= 11;
                     } else if (estBord(i, j, taille)) {
                         score -= 3;
                     } else {
                         score -= 1;
-                    }
+                    }*/
                 }
             }
         }
@@ -147,7 +152,7 @@ public class StrategieMiniMax implements StrategieIA {
             return null;
         }
 
-        int[] meilleurCoup = {0,0};
+        int[] meilleurCoup = null;
         int meilleurScore = Integer.MIN_VALUE;
 
         for (int[] coup : coupsPossibles) {
