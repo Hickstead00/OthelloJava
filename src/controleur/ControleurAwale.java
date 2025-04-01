@@ -3,27 +3,28 @@ package controleur;
 import modele.Jeu;
 import modele.JeuAwale;
 import modele.Joueur;
+import modele.ia.StrategieIA;
 import vue.Ihm;
 
-public class ControleurAwale implements ControleurJeu {
-    private Jeu jeu;
+public class ControleurAwale extends ControleurJeu {
 
-    public ControleurAwale(Jeu jeu) {
-        this.jeu = jeu;
+    public ControleurAwale(Ihm ihm) {
+        super(ihm);
     }
 
     @Override
-    public void jouerUnCoup(Joueur joueur, String coup) {
-        int trou = Character.getNumericValue(coup.charAt(0)) - 1;
-        int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
-        jeu.jouerCoup(ligne, trou, joueur.getCouleur());
+    protected Jeu creerJeu() {
+        return new JeuAwale();
     }
 
     @Override
-    public boolean peutJouer(Joueur joueur) {
-        int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
-        for(int j = 0; j < jeu.getTaille(); j++){
-            if (jeu.verifCoup(ligne, j, joueur.getCouleur())){
+    protected boolean interpreterCoup(String coup, Joueur joueur) {
+        if (coup.length() == 1 && Character.isDigit(coup.charAt(0))) {
+            int trou = Character.getNumericValue(coup.charAt(0)) - 1;
+            int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
+            
+            if (jeu.verifCoup(ligne, trou, joueur.getCouleur())) {
+                jeu.jouerCoup(ligne, trou, joueur.getCouleur());
                 return true;
             }
         }
@@ -31,33 +32,34 @@ public class ControleurAwale implements ControleurJeu {
     }
 
     @Override
-    public void afficherPlateau(Ihm ihm) {
+    protected void afficherPlateau() {
         ihm.afficherPlateauAwale(jeu.getPlateau(), jeu.getScoreNoir(), jeu.getScoreBlanc());
     }
 
     @Override
-    public String demanderCoup(Joueur joueur, Ihm ihm) {
+    protected String demanderCoup(Joueur joueur) {
         return ihm.demanderCoupAwale(joueur);
     }
 
     @Override
-    public boolean estCoupValide(String coup, Joueur joueur) {
-        if (coup.length() == 1 && Character.isDigit(coup.charAt(0))) {
-            int trou = Character.getNumericValue(coup.charAt(0)) - 1;
-            int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
-            
-            return jeu.verifCoup(ligne, trou, joueur.getCouleur());
+    protected StrategieIA choisirStrategieIa() {
+        // L'Awalé ne supporte pas l'IA pour l'instant
+        return null;
+    }
+
+    @Override
+    protected void jouerIa() {
+        // L'Awalé ne supporte pas l'IA pour l'instant
+    }
+
+    @Override
+    protected boolean peutJouer(Joueur joueur) {
+        int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
+        for(int j = 0; j < jeu.getTaille(); j++){
+            if (jeu.verifCoup(ligne, j, joueur.getCouleur())){
+                return true;
+            }
         }
         return false;
-    }
-
-    @Override
-    public void afficherFormatCoupInvalide(Ihm ihm) {
-        ihm.afficherFormatCoupInvalideAwale();
-    }
-
-    @Override
-    public boolean estPartieTerminee() {
-        return jeu.estPartieTerminee();
     }
 } 
