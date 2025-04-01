@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class JeuOthello implements Jeu{
     private String[][] plateau;
-    private static final int TAILLE_PLATEAU = 4; // doit être pair pour que le placement de départ soit correct
+    private static final int TAILLE_PLATEAU = 8; // doit être pair pour que le placement de départ soit correct
     private final String couleurNoire = "\u26AB";
     private final String couleurBlanc = "\u26AA";
     private final String caseVide = "\uD83D\uDFE9";

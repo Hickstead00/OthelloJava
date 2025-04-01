@@ -16,6 +16,10 @@ public class Ihm {
         return sc.nextLine();
     }
 
+    public String lireEntree() {
+        return sc.nextLine();
+    }
+
     public String demanderCoup(Joueur joueur) {
         System.out.printf("%s, entrez votre coup (ex : 1 C) ou 'P' pour passer : ", joueur);
         return sc.nextLine().toUpperCase();
@@ -114,5 +118,59 @@ public class Ihm {
         System.out.println(" - 2 - Awalé");
         System.out.println("Par défault le jeu sera Othello");
         return sc.nextLine().toUpperCase();
+    }
+
+    // Méthodes spécifiques pour Othello
+    public void afficherPlateauOthello(String[][] plateau, int taille) {
+        System.out.println("   A  B  C  D   E  F  G  H");
+
+        for (int i = 0; i < taille; i++) {
+            System.out.print((i+1) + " ");
+            for (int j = 0; j < taille; j++) {
+                System.out.print(plateau[i][j] + " ");
+            }
+            System.out.println("" + (i+1));
+        }
+
+        System.out.println("   A  B  C  D   E  F  G  H");
+    }
+
+    public String demanderCoupOthello(Joueur joueur) {
+        System.out.printf("%s, entrez votre coup (ex : 1 C) ou 'P' pour passer : ", joueur);
+        return sc.nextLine().toUpperCase();
+    }
+
+    public void afficherFormatCoupInvalideOthello() {
+        System.out.println("Le format du coup est invalide. Utilisez le format 'ligne colonne' (ex: 1 C)");
+    }
+
+    // Méthodes spécifiques pour Awalé
+    public void afficherPlateauAwale(String[][] plateau, int scoreJ1, int scoreJ2) {
+        System.out.println("Grenier J2: " + scoreJ2);
+        
+        System.out.println("  6  5  4  3  2  1");
+        System.out.print("| ");
+        for (int j = 5; j >= 0; j--) {
+            System.out.print(plateau[0][j] + " | ");
+        }
+        System.out.println();
+        
+        System.out.print("| ");
+        for (int j = 0; j < 6; j++) {
+            System.out.print(plateau[1][j] + " | ");
+        }
+        System.out.println();
+        System.out.println("  1  2  3  4  5  6");
+        
+        System.out.println("Grenier J1: " + scoreJ1);
+    }
+
+    public String demanderCoupAwale(Joueur joueur) {
+        System.out.printf("%s, entrez le numéro du trou que vous voulez jouer (1-6) : ", joueur);
+        return sc.nextLine().toUpperCase();
+    }
+
+    public void afficherFormatCoupInvalideAwale() {
+        System.out.println("Le format du coup est invalide. Entrez un chiffre entre 1 et 6");
     }
 }
