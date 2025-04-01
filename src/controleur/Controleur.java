@@ -1,16 +1,18 @@
 package controleur;
 
+import modele.Jeu;
+import modele.JeuAwale;
 import modele.Joueur;
 import modele.ia.StrategieIA;
 import modele.ia.StrategieAleatoire;
 import modele.ia.StrategieMiniMax;
 import vue.Ihm;
-import modele.Plateau;
+import modele.JeuOthello;
 
 
 public class Controleur {
     private Ihm ihm;
-    private Plateau plateau;
+    private Jeu jeu;
     private Joueur joueur1;
     private Joueur joueur2;
     private Joueur joueurActuel;
@@ -20,20 +22,19 @@ public class Controleur {
 
     public Controleur(Ihm ihm) {
         this.ihm = ihm;
-        this.plateau = new Plateau();
     }
 
     public void initPartie(){
-        this.joueur1 = new Joueur(ihm.demanderJoueur(1), plateau.getCouleurNoire());
-        if(ihm.demanderJouerContreIA().equals("O")){
-            this.joueur2 = new Joueur("Ordinateur", plateau.getCouleurBlanc());
+        this.joueur1 = new Joueur(ihm.demanderJoueur(1), jeu.getCouleurJ1());
+        if(jeu.supporteIA() && ihm.demanderJouerContreIA().equals("O")){
+            this.joueur2 = new Joueur("Ordinateur", jeu.getCouleurJ2());
             StrategieIA strategieIA = choisirStrategieIa();
             joueur2.setStrategieIA(strategieIA);
             joueur2.setEstUneIA();
             jouerContreIA = true;
         }
         else {
-            this.joueur2 = new Joueur(ihm.demanderJoueur(2), plateau.getCouleurBlanc());}
+            this.joueur2 = new Joueur(ihm.demanderJoueur(2), jeu.getCouleurJ2());}
         joueurActuel = joueur1;
 
     }
@@ -56,6 +57,7 @@ public class Controleur {
     // Initialise la partie et gère la boucle de jeu "globale", a savoir relancer une partie
     // lorsque jouerPartie() se résoud
     public void jouer() {
+        choixJeu();
         initPartie();
         boolean continuerJeu = true;
         
@@ -69,7 +71,7 @@ public class Controleur {
                     reponse = ihm.demanderNouvellePartie();
                     if (reponse.equals("O")) {
                         reponseValide = true;
-                        this.plateau = new Plateau();
+                        this.jeu = new JeuOthello();
                         joueurActuel = joueur1;
                     } else if (reponse.equals("N")) {
                         reponseValide = true;
@@ -86,7 +88,7 @@ public class Controleur {
                     reponse = ihm.demanderNouvellePartie();
                     if (reponse.equals("O")) {
                         reponseValide = true;
-                        this.plateau = new Plateau();
+                        this.jeu = new JeuOthello();
                         joueurActuel = joueur1;
                     } else if (reponse.equals("N")) {
                         reponseValide = true;
@@ -102,7 +104,7 @@ public class Controleur {
 
     public void jouerPartieIA(){
         while(!estPartieTerminee()){
-            ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+            ihm.afficherPlateau(jeu.getPlateau(), jeu.getTaille());
             if(peutJouer(joueurActuel) && joueurActuel.getEstUneIA()){
                 jouerIa();
                 ihm.afficherCoupIa(coor);
@@ -126,14 +128,14 @@ public class Controleur {
 
             }
         }
-        ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+        ihm.afficherPlateau(jeu.getPlateau(), jeu.getTaille());
         terminerPartie();
     }
 
     public void jouerIa(){
         String couleurIa=joueurActuel.getCouleur();
-        this.coor = joueurActuel.getStrategieIA().calculerCoup(plateau, couleurIa);
-        plateau.jouerCoup(coor[0],coor[1],joueurActuel.getCouleur());
+        this.coor = joueurActuel.getStrategieIA().calculerCoup((JeuOthello) jeu, couleurIa);
+        jeu.jouerCoup(coor[0],coor[1],joueurActuel.getCouleur());
     }
 
     // Gère une partie unique, tant que la partie n'est pas terminée on affiche le plateau on regarde si
@@ -143,7 +145,7 @@ public class Controleur {
     // qui calcule les scores et affecte les victoires si besoin puis on quitte cette méthode pour remonter dans jouer()
     public void jouerPartie() {
         while (!estPartieTerminee()) {
-            ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+            ihm.afficherPlateau(jeu.getPlateau(), jeu.getTaille());
             if (peutJouer(joueurActuel)) {
                 jouerUnCoup(joueurActuel);
             } else {
@@ -156,7 +158,7 @@ public class Controleur {
                 }
             }
         }
-        ihm.afficherPlateau(plateau.getPlateau(), plateau.getTaille());
+        ihm.afficherPlateau(jeu.getPlateau(), jeu.getTaille());
         terminerPartie();
     }
 
@@ -180,9 +182,9 @@ public class Controleur {
                 int colonne = coup.charAt(2) - 'A';
                 String couleur = joueurActuel.getCouleur();
 
-                if (plateau.verifCoup(ligne, colonne, couleur)) {
+                if (jeu.verifCoup(ligne, colonne, couleur)) {
                     coupValide = true;
-                    plateau.jouerCoup(ligne, colonne, couleur);
+                    jeu.jouerCoup(ligne, colonne, couleur);
                     joueurActuel = (joueurActuel == joueur1) ? joueur2 : joueur1;
                 }
                 else {
@@ -197,9 +199,9 @@ public class Controleur {
 
     // Va chercher dans le modèle si un coup est légal
     private boolean peutJouer(Joueur joueurActuel) {
-        for(int i = 0; i < plateau.getTaille(); i++){
-            for(int j = 0; j < plateau.getTaille(); j++){
-                if (plateau.verifCoup(i, j, joueurActuel.getCouleur())){
+        for(int i = 0; i < jeu.getTaille(); i++){
+            for(int j = 0; j < jeu.getTaille(); j++){
+                if (jeu.verifCoup(i, j, joueurActuel.getCouleur())){
                     return true;
                 }
             }
@@ -216,18 +218,33 @@ public class Controleur {
     // Assigne aux variable J1 J2 les scores de chaque joueurs calculés dans le plateau et incrémente leur compteur de
     // victoire personelles si necessaire ou un statique égalité commun à la classe si égalité.
     private void terminerPartie() {
-        int scoreJ1 = plateau.getScoreNoir();
-        int scoreJ2 = plateau.getScoreBlanc();
+        int scoreJ1 = jeu.getScoreNoir();
+        int scoreJ2 = jeu.getScoreBlanc();
         
         ihm.afficherScoreFinal(joueur1, scoreJ1, joueur2, scoreJ2);
 
-        Joueur vainqueur = plateau.determinerVainqueur(joueur1, joueur2);
+        Joueur vainqueur = jeu.determinerVainqueur(joueur1, joueur2);
         if (vainqueur != null) {
             vainqueur.incrementerVictoires();
             ihm.afficherVainqueur(vainqueur);
         } else {
             Joueur.incrementerEgalites();
             ihm.afficherEgalite();
+        }
+    }
+
+    public void choixJeu(){
+        String choix = ihm.choisirJeu();
+        switch (choix) {
+            case "1":
+                this.jeu = new JeuOthello();
+                break;
+            case "2":
+                this.jeu = new JeuAwale();
+                break;
+            default:
+                this.jeu = new JeuOthello();
+                break;
         }
     }
 }

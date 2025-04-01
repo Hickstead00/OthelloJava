@@ -2,9 +2,8 @@ package modele;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeMap;
 
-public class Plateau {
+public class JeuOthello implements Jeu{
     private String[][] plateau;
     private static final int TAILLE_PLATEAU = 4; // doit être pair pour que le placement de départ soit correct
     private final String couleurNoire = "\u26AB";
@@ -14,12 +13,12 @@ public class Plateau {
     private int scoreBlanc;
     HashMap<String, Integer> arbre = new HashMap<>();
 
-    public Plateau() {
+    public JeuOthello() {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
-        initialiser();
+        initialiserJeu();
     }
 
-    public Plateau(Plateau copie) {
+    public JeuOthello(JeuOthello copie) {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
             for (int j = 0; j < TAILLE_PLATEAU; j++) {
@@ -36,17 +35,18 @@ public class Plateau {
         return plateau;
     }
 
-    public String getCouleurNoire() {
+    public String getCouleurJ1() {
         return couleurNoire;
     }
 
-    public String getCouleurBlanc() {
+    public String getCouleurJ2() {
         return couleurBlanc;
     }
 
     // Initialise le plateau à cases vides puis en determine le millieu de manière a ce que l'on ai qu'à changer le
     // parametre de la taille du plateau dans toute l'application
-    private void initialiser() {
+    @Override
+    public void initialiserJeu() {
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
             for (int j = 0; j < TAILLE_PLATEAU; j++) {
                 plateau[i][j] = caseVide;
@@ -61,6 +61,7 @@ public class Plateau {
     }
 
     // Verification de la légalité du coup selon les règles de l'othello, case vide, adjacence à une couleur adverse..
+    @Override
     public boolean verifCoup(int ligne, int colonne, String couleur) {
         // La case doit être vide et dans les limites
         if (!estDansLesLimites(ligne, colonne) || !plateau[ligne][colonne].equals(caseVide)) {
@@ -125,6 +126,7 @@ public class Plateau {
 
 
     // Pose un pion et appelle retournerPionDirection pour toutes les directions possibles
+    @Override
     public void jouerCoup(int ligne, int colonne, String couleur) {
         // On place le pion d'abord
         plateau[ligne][colonne] = couleur;
@@ -203,6 +205,12 @@ public class Plateau {
         return scoreBlanc;
     }
 
+    @Override
+    public int getScoreJoueur(Joueur joueur) {
+        return 0;
+    }
+
+    @Override
     public Joueur determinerVainqueur(Joueur joueurNoir, Joueur joueurBlanc) {
         mettreAJourScores();
         if (scoreNoir > scoreBlanc) {
@@ -213,9 +221,14 @@ public class Plateau {
         return null; // En cas d'égalité
     }
 
-
-    private boolean partieFini() {
+    @Override
+    public boolean estPartieTerminee() {
         return (coupPossible(couleurBlanc).isEmpty() && coupPossible(couleurNoire).isEmpty());
+    }
+
+    @Override
+    public boolean supporteIA(){
+        return true;
     }
 
 }

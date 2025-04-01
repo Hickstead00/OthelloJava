@@ -104,7 +104,15 @@ public class Ihm {
         System.out.println("Veuillez choisir votre modèle d'IA : ");
         System.out.println("1 : IA Aléatoire (moyen)");
         System.out.println("2 : IA MiniMax (difficile)");
+        System.out.println("Par défault l'IA sera aléatoire");
         return sc.nextLine().toUpperCase();
     }
 
+    public String choisirJeu(){
+        System.out.println("Choisissez un jeu : ");
+        System.out.println(" - 1 - Othello");
+        System.out.println(" - 2 - Awalé");
+        System.out.println("Par défault le jeu sera Othello");
+        return sc.nextLine().toUpperCase();
+    }
 }
