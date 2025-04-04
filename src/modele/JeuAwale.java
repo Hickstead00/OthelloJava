@@ -20,7 +20,7 @@ public class JeuAwale implements Jeu {
         String[][] copiePlateau = new String[HAUTEUR][LARGEUR];
         for (int i = 0; i < HAUTEUR; i++) {
             for (int j = 0; j < LARGEUR; j++) {
-                this.plateau[i][j] = copiePlateau[i][j];
+                copiePlateau[i][j] = plateau[i][j];
             }
         }
         return copiePlateau;
@@ -45,21 +45,22 @@ public class JeuAwale implements Jeu {
     {
         if (!(estDansLesLimites(ligne,colonne)))
         {
+
             return false;
         }
-
-        if ((couleur.equals(COULEUR_J1) && ligne !=0) || (couleur.equals(COULEUR_J2) && ligne!=1))
-        {
+        if ((couleur.equals(COULEUR_J1) && ligne != 1) ||
+                (couleur.equals(COULEUR_J2) && ligne != 0)) {
             return false;
         }
-
         if (plateau[ligne][colonne].equals(CASE_VIDE))
         {
             return false;
         }
+        if (siAffame(ligne,colonne,couleur)){
+            System.out.println("Erreur de verification");return false;
+        }
 
-
-        return !(siAffame(ligne,colonne,couleur,plateau));
+        return true;
     }
 
     public void jouerCoup(int ligne,int colonne, String couleur)
@@ -69,15 +70,17 @@ public class JeuAwale implements Jeu {
         int ligneActual = ligne;
         int colonneActual = colonne;
 
-        for (int i=0;i<=nbGraines;i++)
+        while(nbGraines> 0)
         {
-            if (ligneActual == 0)
+            colonneActual--;
+            if (colonneActual<0)
             {
-                colonneActual = colonne--;
+                ligneActual=(ligneActual==0)?1:0;
+                colonneActual=0;
             }
-            else
-            {
-                colonneActual = colonne++;
+            else if (colonneActual >= LARGEUR) {
+                ligneActual = (ligneActual == 0) ? 1 : 0;
+                colonneActual = LARGEUR - 1;
             }
             /*si les graines sont 12 ou + saute la case de départ*/
             if (nbGraines>11 && ligneActual == ligne && colonneActual == colonne)
@@ -112,7 +115,7 @@ public class JeuAwale implements Jeu {
         }
     }
 
-    private boolean siAffame(int ligne,int colonne, String couleur, String[][] plateau)
+    private boolean siAffame(int ligne,int colonne, String couleur)
     {
 
         String[][] copiePlateau = copiePlateau(plateau);
@@ -121,34 +124,36 @@ public class JeuAwale implements Jeu {
         int ligneActual = ligne;
         int colonneActual = colonne;
 
-        for (int i=0;i<=nbGraines;i++)
+        while(nbGraines> 0)
         {
-            if (ligneActual == 0)
+            colonneActual= (colonneActual+1)%LARGEUR;
+            if (colonneActual<0)
             {
-                colonneActual = colonne--;
+                ligneActual=(ligneActual==0)?1:0;
+                colonneActual=0;
             }
-            else
-            {
-                colonneActual = colonne++;
+            else if (colonneActual >= LARGEUR) {
+                ligneActual = (ligneActual == 0) ? 1 : 0;
+                colonneActual = LARGEUR - 1;
             }
             /*si les graines sont 12 ou + saute la case de départ*/
-            if (nbGraines>11 && ligneActual == ligne && colonneActual == colonne)
+            if ( ligneActual == ligne && colonneActual == colonne)
             {
                 continue;
             }
             /*seme une graines sur la case*/
-            copiePlateau[ligneActual][colonneActual] = String.valueOf(Integer.parseInt(copiePlateau[ligneActual][colonneActual]+1));
+            copiePlateau[ligneActual][colonneActual] = String.valueOf(Integer.parseInt(copiePlateau[ligneActual][colonneActual])+1);
             nbGraines--;
 
         }
-        int idadverse = couleur.equals(COULEUR_J2) ? 0 : 1 ;
+        int idAdverse = couleur.equals(COULEUR_J2) ? 0 : 1 ;
         for (int i=0;i<LARGEUR ;i++)
         {
-            if ((Integer.parseInt(copiePlateau[idadverse][i])>0)){
-                return true;
+            if (!(Integer.parseInt(copiePlateau[idAdverse][i])>0)){
+                return false;
             }
         }
-        return false;
+        return true;
     }
     public String[][] getPlateau(JeuAwale jeu){
         return plateau;
