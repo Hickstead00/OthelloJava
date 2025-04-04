@@ -14,7 +14,7 @@ public class ControleurAwale extends ControleurJeu {
 
     @Override
     protected Jeu creerJeu() {
-        return new JeuAwale();
+        return new JeuAwale(plateau);
     }
 
     @Override

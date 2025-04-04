@@ -109,7 +109,14 @@ public class JeuAwale implements Jeu {
         }
     }
 
-    private boolean siAffame()
+    private boolean siAffame(int ligne,int colonne, String couleur, JeuAwale jeu)
+    {
+        JeuAwale copiePlateau = new JeuAwale(jeu);
+
+
+
+
+    }
 
 
     @Override
