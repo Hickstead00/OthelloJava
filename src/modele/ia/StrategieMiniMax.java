@@ -1,25 +1,19 @@
 package modele.ia;
 
-import modele.Plateau;
+import modele.JeuOthello;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class StrategieMiniMax implements StrategieIA {
 
-    private HashMap<String, Integer> arbre = new HashMap<>();
     private final int SCORE_VICTOIRE = 1000;
-    private final int PROFONDEUR_MAX = 20; // Profondeur de recherche par défaut de l'algo
+    private final int PROFONDEUR_MAX = 3; // Profondeur de recherche par défaut de l'algo
 
     @Override
-    public int[] calculerCoup(Plateau plateau, String couleur) {
-        return meilleurCoupMinMax(plateau, couleur, PROFONDEUR_MAX);
+    public int[] calculerCoup(JeuOthello jeuOthello, String couleur) {
+        return meilleurCoupMinMax(jeuOthello, couleur, PROFONDEUR_MAX);
     }
 
-    @Override
-    public String getNom() {
-        return "MiniMax";
-    }
 
     private static boolean estCoin(int ligne, int colonne, int taille) {
         return (ligne == 0 && colonne == 0) ||
@@ -32,14 +26,14 @@ public class StrategieMiniMax implements StrategieIA {
         return ligne == 0 || ligne == taille - 1 || colonne == 0 || colonne == taille - 1;
     }
 
-    private int evaluerPosition(Plateau plateau, String couleur) {
+    private int evaluerPosition(JeuOthello jeuOthello, String couleur) {
         // Vérifier si la partie est terminée
-        if (estPartieTerminee(plateau)) {
-            plateau.mettreAJourScores();
-            int scoreNoir = plateau.getScoreNoir();
-            int scoreBlanc = plateau.getScoreBlanc();
+        if (estPartieTerminee(jeuOthello)) {
+            jeuOthello.mettreAJourScores();
+            int scoreNoir = jeuOthello.getScoreNoir();
+            int scoreBlanc = jeuOthello.getScoreBlanc();
 
-            boolean estNoir = couleur.equals(plateau.getCouleurNoire());
+            boolean estNoir = couleur.equals(jeuOthello.getCouleurJ1());
 
             // Si le joueur actuel est noir
             if (estNoir) {
@@ -64,34 +58,29 @@ public class StrategieMiniMax implements StrategieIA {
 
         // Évaluation classique si la partie n'est pas terminée
         int score = 0;
-        int taille = plateau.getTaille();
-        String[][] etatPlateau = plateau.getPlateau();
-        String couleurAdversaire = (couleur.equals(plateau.getCouleurNoire())) ?
-                plateau.getCouleurBlanc() : plateau.getCouleurNoire();
+        int taille = jeuOthello.getTaille();
+        String[][] etatPlateau = jeuOthello.getPlateau();
+        String couleurAdversaire = (couleur.equals(jeuOthello.getCouleurJ1())) ?
+                jeuOthello.getCouleurJ2() : jeuOthello.getCouleurJ1();
 
-        for (int i = 0; i < taille; i++)
-        {
-            for (int j = 0; j < taille; j++)
-            {
-                if (etatPlateau[i][j].equals(couleur))
-                {
-                    if (estCoin(i, j, taille))
-                    {
-                        score += 11;
-                    } else if (estBord(i, j, taille))
-                    {
+        for (int i = 0; i < taille; i++) {
+            for (int j = 0; j < taille; j++) {
+                if (etatPlateau[i][j].equals(couleur)) {
+                    if (estCoin(i, j, taille)) {
+                        score += 10;
+                    } else if (estBord(i, j, taille)) {
                         score += 3;
                     } else {
                         score += 1;
                     }
-                /*} else if (etatPlateau[i][j].equals(couleurAdversaire)) {
+                } else if (etatPlateau[i][j].equals(couleurAdversaire)) {
                     if (estCoin(i, j, taille)) {
-                        score -= 11;
+                        score -= 10;
                     } else if (estBord(i, j, taille)) {
                         score -= 3;
                     } else {
                         score -= 1;
-                    }*/
+                    }
                 }
             }
         }
@@ -99,45 +88,44 @@ public class StrategieMiniMax implements StrategieIA {
     }
 
 
-    private Plateau coupHypothetique(int ligne, int colonne, Plateau plateau, String couleur) {
-        Plateau nouveauPlateau = new Plateau(plateau);
-        nouveauPlateau.jouerCoup(ligne, colonne, couleur);
-        return nouveauPlateau;
+    private JeuOthello coupHypothetique(int ligne, int colonne, JeuOthello jeuOthello, String couleur) {
+        JeuOthello nouveauJeuOthello = new JeuOthello(jeuOthello);
+        nouveauJeuOthello.jouerCoup(ligne, colonne, couleur);
+        return nouveauJeuOthello;
     }
 
-    private int minMax(Plateau plateau, String couleur, int profondeur, boolean estMax) {
+    private int minMax(JeuOthello jeuOthello, String couleur, int profondeur, boolean estMax) {
         if (profondeur == 0)
-            return evaluerPosition(plateau, couleur);  /* si on arrive à une feuille return eval des pions du plateau pour l'ordi */
+            return evaluerPosition(jeuOthello, couleur);  /* si on arrive à une feuille return eval des pions du plateau pour l'ordi */
         String couleurActuelle = estMax ? couleur :
-                (couleur.equals(plateau.getCouleurNoire()) ?
-                        plateau.getCouleurBlanc() : plateau.getCouleurNoire());
-        ArrayList<int[]> coupsPossibles = plateau.coupPossible(couleur);
+                (couleur.equals(jeuOthello.getCouleurJ1()) ?
+                        jeuOthello.getCouleurJ2() : jeuOthello.getCouleurJ1());
+        ArrayList<int[]> coupsPossibles = jeuOthello.coupPossible(couleur);
 
         if (coupsPossibles.isEmpty()) {
             // Si pas de coups, on change de joueur ou on évalue si les deux ne peuvent pas jouer
-            String autreCouleur = (couleurActuelle.equals(plateau.getCouleurNoire())) ?
-                    plateau.getCouleurBlanc() : plateau.getCouleurNoire();
-            if (plateau.coupPossible(autreCouleur).isEmpty()) {
+            String autreCouleur = (couleurActuelle.equals(jeuOthello.getCouleurJ1())) ?
+                    jeuOthello.getCouleurJ2() : jeuOthello.getCouleurJ1();
+            if (jeuOthello.coupPossible(autreCouleur).isEmpty()) {
                 // Partie terminée
-                return evaluerPosition(plateau, couleur);
+                return evaluerPosition(jeuOthello, couleur);
             }
-            return minMax(plateau, couleur, profondeur - 1, !estMax);
+            return minMax(jeuOthello, couleur, profondeur - 1, !estMax);
         }
 
         int meilleurScore;
         if (estMax) {
             meilleurScore = Integer.MIN_VALUE;
             for (int[] coup : coupsPossibles) {
-                Plateau nouveauPlateau = coupHypothetique(coup[0], coup[1], plateau, couleurActuelle);
-                int score = minMax(nouveauPlateau, couleur, profondeur - 1, false);
+                JeuOthello nouveauJeuOthello = coupHypothetique(coup[0], coup[1], jeuOthello, couleurActuelle);
+                int score = minMax(nouveauJeuOthello, couleur, profondeur - 1, false);
                 meilleurScore = Math.max(meilleurScore, score);
-
             }
         } else {
             meilleurScore = Integer.MAX_VALUE;
             for (int[] coup : coupsPossibles) {
-                Plateau nouveauPlateau = coupHypothetique(coup[0], coup[1], plateau, couleurActuelle);
-                int score = minMax(nouveauPlateau, couleur, profondeur - 1, true);
+                JeuOthello nouveauJeuOthello = coupHypothetique(coup[0], coup[1], jeuOthello, couleurActuelle);
+                int score = minMax(nouveauJeuOthello, couleur, profondeur - 1, true);
                 meilleurScore = Math.min(meilleurScore, score);
             }
         }
@@ -146,8 +134,8 @@ public class StrategieMiniMax implements StrategieIA {
     }
 
 
-    public int[] meilleurCoupMinMax(Plateau plateau, String couleur, int profondeur) {
-        ArrayList<int[]> coupsPossibles = plateau.coupPossible(couleur);
+    public int[] meilleurCoupMinMax(JeuOthello jeuOthello, String couleur, int profondeur) {
+        ArrayList<int[]> coupsPossibles = jeuOthello.coupPossible(couleur);
         if (coupsPossibles.isEmpty()) {
             return null;
         }
@@ -156,10 +144,9 @@ public class StrategieMiniMax implements StrategieIA {
         int meilleurScore = Integer.MIN_VALUE;
 
         for (int[] coup : coupsPossibles) {
-            Plateau nouveauPlateau = coupHypothetique(coup[0], coup[1], plateau, couleur);
-            int score = minMax(nouveauPlateau, couleur, profondeur - 1, false);
+            JeuOthello nouveauJeuOthello = coupHypothetique(coup[0], coup[1], jeuOthello, couleur);
+            int score = minMax(nouveauJeuOthello, couleur, profondeur - 1, false);
 
-            System.out.println(score+" : "+coup[0]+";"+coup[1]);
             if (score > meilleurScore) {
                 meilleurScore = score;
                 meilleurCoup = coup;
@@ -170,20 +157,11 @@ public class StrategieMiniMax implements StrategieIA {
     }
 
 
-    public HashMap<String, Integer> getArbre() {
-        return arbre;
-    }
+    private boolean estPartieTerminee(JeuOthello jeuOthello) {
+        String couleurNoire = jeuOthello.getCouleurJ1();
+        String couleurBlanc = jeuOthello.getCouleurJ2();
 
-    public void addArbre(int[] coup, int point) {
-        String key = coup[0] + "," + coup[1];
-        arbre.put(key, point);
-    }
-
-    private boolean estPartieTerminee(Plateau plateau) {
-        String couleurNoire = plateau.getCouleurNoire();
-        String couleurBlanc = plateau.getCouleurBlanc();
-
-        return plateau.coupPossible(couleurNoire).isEmpty() &&
-                plateau.coupPossible(couleurBlanc).isEmpty();
+        return jeuOthello.coupPossible(couleurNoire).isEmpty() &&
+                jeuOthello.coupPossible(couleurBlanc).isEmpty();
     }
 }

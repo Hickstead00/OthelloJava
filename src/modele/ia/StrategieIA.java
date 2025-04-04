@@ -1,7 +1,6 @@
 package modele.ia;
-import modele.Plateau;
+import modele.JeuOthello;
 
 public interface StrategieIA {
-    int[] calculerCoup(Plateau plateau, String couleur);
-    String getNom();
+    int[] calculerCoup(JeuOthello jeuOthello, String couleur);
 }
