@@ -15,14 +15,15 @@ public class JeuAwale implements Jeu {
         initialiserJeu();
     }
 
-    public JeuAwale(JeuAwale copiePlateau ) {
-        this.plateau = new String[HAUTEUR][LARGEUR];
-        this.greniers = new int[2];
+
+    public String[][] copiePlateau(String[][] plateau) {
+        String[][] copiePlateau = new String[HAUTEUR][LARGEUR];
         for (int i = 0; i < HAUTEUR; i++) {
             for (int j = 0; j < LARGEUR; j++) {
-                this.plateau[i][j] = copiePlateau.plateau[i][j];
+                this.plateau[i][j] = copiePlateau[i][j];
             }
         }
+        return copiePlateau;
     }
 
     @Override
@@ -56,7 +57,9 @@ public class JeuAwale implements Jeu {
         {
             return false;
         }
-        return true;
+
+
+        return !(siAffame(ligne,colonne,couleur,plateau));
     }
 
     public void jouerCoup(int ligne,int colonne, String couleur)
@@ -86,7 +89,7 @@ public class JeuAwale implements Jeu {
             nbGraines--;
 
         }
-        int ligneJoueurAdverse = (couleur.equals(COULEUR_J1) ? 0 : 1;
+        int ligneJoueurAdverse = (couleur.equals(COULEUR_J1) ? 0 : 1);
         if (ligneJoueurAdverse == ligneActual)
         {
             manger(ligneActual,colonneActual,couleur);
@@ -109,13 +112,79 @@ public class JeuAwale implements Jeu {
         }
     }
 
-    private boolean siAffame(int ligne,int colonne, String couleur, JeuAwale jeu)
+    private boolean siAffame(int ligne,int colonne, String couleur, String[][] plateau)
     {
-        JeuAwale copiePlateau = new JeuAwale(jeu);
+
+        String[][] copiePlateau = copiePlateau(plateau);
+        int nbGraines= Integer.parseInt((copiePlateau[ligne][colonne]));
+        copiePlateau[ligne][colonne] = CASE_VIDE;
+        int ligneActual = ligne;
+        int colonneActual = colonne;
+
+        for (int i=0;i<=nbGraines;i++)
+        {
+            if (ligneActual == 0)
+            {
+                colonneActual = colonne--;
+            }
+            else
+            {
+                colonneActual = colonne++;
+            }
+            /*si les graines sont 12 ou + saute la case de départ*/
+            if (nbGraines>11 && ligneActual == ligne && colonneActual == colonne)
+            {
+                continue;
+            }
+            /*seme une graines sur la case*/
+            copiePlateau[ligneActual][colonneActual] = String.valueOf(Integer.parseInt(copiePlateau[ligneActual][colonneActual]+1));
+            nbGraines--;
+
+        }
+        int idadverse = couleur.equals(COULEUR_J2) ? 0 : 1 ;
+        for (int i=0;i<LARGEUR ;i++)
+        {
+            if ((Integer.parseInt(copiePlateau[idadverse][i])>0)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public String[][] getPlateau(JeuAwale jeu){
+        return plateau;
+    }
+    @Override
+    public boolean estPartieTerminee() {
+
+        boolean joueur1SansGraines = true;
+        boolean joueur2SansGraines = true;
+
+        for (int j = 0; j < LARGEUR; j++) {
+            if (!plateau[1][j].equals("0") && Integer.parseInt(plateau[1][j]) > 0) {
+                joueur1SansGraines = false;
+            }
+            if (!plateau[0][j].equals("0") && Integer.parseInt(plateau[0][j]) > 0) {
+                joueur2SansGraines = false;
+            }
+        }
 
 
+        if (joueur1SansGraines || joueur2SansGraines) {
+            if (joueur1SansGraines) {
+                for (int j = 0; j < LARGEUR; j++) {
+                    greniers[1] += Integer.parseInt(plateau[0][j]);
+                    plateau[0][j] = "0";
+                }
+            } else {
+                for (int j = 0; j < LARGEUR; j++) {
+                    greniers[0] += Integer.parseInt(plateau[1][j]);
+                    plateau[1][j] = "0";
+                }
+            }
+            return true;
+        }
 
-
+        return false;
     }
 
 
