@@ -72,11 +72,10 @@ public class JeuAwale implements Jeu {
 
         while(nbGraines> 0)
         {
-            colonneActual++;
+            colonneActual=(colonneActual+1)%LARGEUR;
 
-            if (colonneActual == 0 || colonneActual == 6 ) {
+            if (colonneActual == 0) {
                 ligneActual = (ligneActual == 0) ? 1 : 0;
-                colonneActual = 0;
             }
             /*si les graines sont 12 ou + saute la case de départ*/
             if (nbGraines>11 && ligneActual == ligne && colonneActual == colonne)
