@@ -1,3 +1,7 @@
+/**
+ * Implémentation du jeu Othello.
+ * Gère la logique du jeu Othello, y compris les règles, le plateau et le décompte des points.
+ */
 package modele;
 
 import java.util.ArrayList;
@@ -13,11 +17,18 @@ public class JeuOthello implements Jeu{
     private int scoreBlanc;
     HashMap<String, Integer> arbre = new HashMap<>();
 
+    /**
+     * Constructeur par défaut qui initialise un nouveau jeu d'Othello.
+     */
     public JeuOthello() {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
         initialiserJeu();
     }
 
+    /**
+     * Constructeur de copie qui crée une nouvelle instance à partir d'une autre.
+     * @param copie Le jeu Othello à copier
+     */
     public JeuOthello(JeuOthello copie) {
         this.plateau = new String[TAILLE_PLATEAU][TAILLE_PLATEAU];
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
@@ -27,24 +38,42 @@ public class JeuOthello implements Jeu{
         }
     }
 
+    /**
+     * Récupère la taille du plateau.
+     * @return La taille du plateau
+     */
     public int getTaille() {
         return TAILLE_PLATEAU;
     }
 
+    /**
+     * Récupère l'état actuel du plateau.
+     * @return Le plateau de jeu
+     */
     public String[][] getPlateau() {
         return plateau;
     }
 
+    /**
+     * Récupère la couleur du premier joueur (noir).
+     * @return La couleur du premier joueur
+     */
     public String getCouleurJ1() {
         return couleurNoire;
     }
 
+    /**
+     * Récupère la couleur du second joueur (blanc).
+     * @return La couleur du second joueur
+     */
     public String getCouleurJ2() {
         return couleurBlanc;
     }
 
-    // Initialise le plateau à cases vides puis en determine le millieu de manière a ce que l'on ai qu'à changer le
-    // parametre de la taille du plateau dans toute l'application
+    /**
+     * Initialise le plateau avec la configuration de départ du jeu Othello.
+     * Place les pions initiaux au centre du plateau.
+     */
     @Override
     public void initialiserJeu() {
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
@@ -60,7 +89,13 @@ public class JeuOthello implements Jeu{
         plateau[millieu][millieu] = couleurBlanc;
     }
 
-    // Verification de la légalité du coup selon les règles de l'othello, case vide, adjacence à une couleur adverse..
+    /**
+     * Vérifie si un coup est valide selon les règles de l'Othello.
+     * @param ligne La ligne du coup
+     * @param colonne La colonne du coup
+     * @param couleur La couleur du joueur
+     * @return true si le coup est valide, false sinon
+     */
     @Override
     public boolean verifCoup(int ligne, int colonne, String couleur) {
         // La case doit être vide et dans les limites
@@ -80,9 +115,15 @@ public class JeuOthello implements Jeu{
         return false;
     }
 
-
-    // Méthode appelée pour chaque ligne colonne et diagonale afin de vérifier s'il existe au minimum un pion adverse
-    // a capturer si oui renvoie true sinon false
+    /**
+     * Vérifie si un coup est valide dans une direction spécifique.
+     * @param ligne La ligne de départ
+     * @param colonne La colonne de départ
+     * @param dirX La direction en x
+     * @param dirY La direction en y
+     * @param couleurAdver La couleur adverse
+     * @return true si le coup est valide dans cette direction, false sinon
+     */
     public boolean verifLigneCoup(int ligne, int colonne, int dirX, int dirY, String couleurAdver) {
         int nextLigne = ligne + dirX;
         int nextColonne = colonne + dirY;
@@ -111,6 +152,11 @@ public class JeuOthello implements Jeu{
         return false;
     }
 
+    /**
+     * Récupère tous les coups possibles pour une couleur donnée.
+     * @param couleur La couleur du joueur
+     * @return Une liste des coordonnées des coups possibles
+     */
     public ArrayList<int[]> coupPossible(String couleur) {
         ArrayList<int[]> listeCoup;
         listeCoup = new ArrayList<>();
@@ -124,8 +170,12 @@ public class JeuOthello implements Jeu{
         return listeCoup;
     }
 
-
-    // Pose un pion et appelle retournerPionDirection pour toutes les directions possibles
+    /**
+     * Joue un coup sur le plateau et retourne les pions capturés.
+     * @param ligne La ligne du coup
+     * @param colonne La colonne du coup
+     * @param couleur La couleur du joueur
+     */
     @Override
     public void jouerCoup(int ligne, int colonne, String couleur) {
         // On place le pion d'abord
@@ -138,8 +188,14 @@ public class JeuOthello implements Jeu{
         }
     }
 
-    // Retourne tout les pions possibles dans chaque direction ou l'on rencontre un pion de couleur opposé
-    // s'arrête au premier.
+    /**
+     * Retourne les pions dans une direction spécifique après un coup.
+     * @param ligne La ligne de départ
+     * @param colonne La colonne de départ
+     * @param dirX La direction en x
+     * @param dirY La direction en y
+     * @param couleur La couleur du joueur
+     */
     private void retournerPionsDirection(int ligne, int colonne, int dirX, int dirY, String couleur) {
         String couleurAdver = (couleur.equals(couleurNoire)) ? couleurBlanc : couleurNoire;
 
@@ -160,7 +216,10 @@ public class JeuOthello implements Jeu{
         }
     }
 
-    // Compte les pions de chaque couleur et retourne un tableau taille 2 avec 0 : Joueur noir et 1 : Joueur blanc
+    /**
+     * Compte le nombre de pions de chaque couleur sur le plateau.
+     * @return Un tableau contenant le nombre de pions noirs et blancs
+     */
     public int[] compterPion() {
         int[] scores = new int[2];
         for (int i = 0; i < TAILLE_PLATEAU; i++) {
@@ -176,11 +235,19 @@ public class JeuOthello implements Jeu{
         return scores;
     }
 
+    /**
+     * Vérifie si des coordonnées sont dans les limites du plateau.
+     * @param ligne La ligne à vérifier
+     * @param colonne La colonne à vérifier
+     * @return true si les coordonnées sont valides, false sinon
+     */
     public boolean estDansLesLimites(int ligne, int colonne) {
         return ligne >= 0 && ligne < TAILLE_PLATEAU && colonne >= 0 && colonne < TAILLE_PLATEAU;
     }
 
-    // Parcours le plateau et met jour les scores de chaque couleur
+    /**
+     * Met à jour les scores des joueurs en comptant les pions sur le plateau.
+     */
     public void mettreAJourScores() {
         scoreNoir = 0;
         scoreBlanc = 0;
