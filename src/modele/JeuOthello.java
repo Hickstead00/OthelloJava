@@ -216,24 +216,6 @@ public class JeuOthello implements Jeu{
         }
     }
 
-    /**
-     * Compte le nombre de pions de chaque couleur sur le plateau.
-     * @return Un tableau contenant le nombre de pions noirs et blancs
-     */
-    public int[] compterPion() {
-        int[] scores = new int[2];
-        for (int i = 0; i < TAILLE_PLATEAU; i++) {
-            for (int j = 0; j < TAILLE_PLATEAU; j++) {
-                if (plateau[i][j].equals(couleurNoire)) {
-                    scores[0]++;
-                }
-                if (plateau[i][j].equals(couleurBlanc)) {
-                    scores[1]++;
-                }
-            }
-        }
-        return scores;
-    }
 
     /**
      * Vérifie si des coordonnées sont dans les limites du plateau.
@@ -262,21 +244,30 @@ public class JeuOthello implements Jeu{
         }
     }
 
+    /**
+     * Récupère le score du joueur noir en comptant le nombre de pions noirs sur le plateau.
+     * @return Le score du joueur noir
+     */
     public int getScoreNoir() {
         mettreAJourScores();
         return scoreNoir;
     }
 
+    /**
+     * Récupère le score du joueur blanc en comptant le nombre de pions blancs sur le plateau.
+     * @return Le score du joueur blanc
+     */
     public int getScoreBlanc() {
         mettreAJourScores();
         return scoreBlanc;
     }
 
-    @Override
-    public int getScoreJoueur(Joueur joueur) {
-        return 0;
-    }
-
+    /**
+     * Détermine le vainqueur de la partie en comparant les scores des deux joueurs.
+     * @param joueurNoir Le joueur ayant les pions noirs
+     * @param joueurBlanc Le joueur ayant les pions blancs
+     * @return Le joueur vainqueur, ou null en cas d'égalité
+     */
     @Override
     public Joueur determinerVainqueur(Joueur joueurNoir, Joueur joueurBlanc) {
         mettreAJourScores();
@@ -288,11 +279,20 @@ public class JeuOthello implements Jeu{
         return null; // En cas d'égalité
     }
 
+    /**
+     * Vérifie si la partie est terminée.
+     * La partie est terminée lorsqu'aucun des deux joueurs ne peut jouer de coup valide.
+     * @return true si la partie est terminée, false sinon
+     */
     @Override
     public boolean estPartieTerminee() {
         return (coupPossible(couleurBlanc).isEmpty() && coupPossible(couleurNoire).isEmpty());
     }
 
+    /**
+     * Indique si le jeu supporte le mode contre l'IA.
+     * @return true car le jeu Othello supporte l'IA
+     */
     @Override
     public boolean supporteIA(){
         return true;

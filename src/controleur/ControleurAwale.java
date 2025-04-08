@@ -40,15 +40,25 @@ public class ControleurAwale extends ControleurJeu {
     @Override
     protected boolean interpreterCoup(String coup, Joueur joueur) {
         if (coup.length() == 1 && Character.isDigit(coup.charAt(0))) {
-            int trou = Character.getNumericValue(coup.charAt(0)) - 1;
+            int trou = Character.getNumericValue(coup.charAt(0));
+            if (trou < 1 || trou > 6) {
+                ihm.afficherFormatCoupInvalideAwale();
+                return false;
+            }
+            trou--; // Conversion en index correcte
             int ligne = (joueur.getCouleur().equals(jeu.getCouleurJ1())) ? 1 : 0;
             
             if (jeu.verifCoup(ligne, trou, joueur.getCouleur())) {
                 jeu.jouerCoup(ligne, trou, joueur.getCouleur());
                 return true;
+            } else {
+                ihm.afficherCoupInvalide();
+                return false;
             }
+        } else {
+            ihm.afficherFormatCoupInvalideAwale();
+            return false;
         }
-        return false;
     }
 
     /**

@@ -27,43 +27,6 @@ public class Ihm {
         return sc.nextLine();
     }
 
-    /**
-     * Lit une entrée de l'utilisateur.
-     * @return La chaîne de caractères saisie par l'utilisateur
-     */
-    public String lireEntree() {
-        return sc.nextLine();
-    }
-
-    /**
-     * Demande un coup à un joueur.
-     * @param nomJoueur Le nom du joueur qui doit jouer
-     * @return Le coup saisi par le joueur
-     */
-    public String demanderCoup(String nomJoueur) {
-        System.out.printf("%s, entrez votre coup (ex : 1 C) ou 'P' pour passer : ", nomJoueur);
-        return sc.nextLine().toUpperCase();
-    }
-
-    /**
-     * Affiche le plateau de jeu.
-     * @param plateau Le plateau à afficher
-     * @param taille La taille du plateau
-     */
-    public void afficherPlateau(String[][] plateau, int taille) {
-
-        System.out.println("   A  B  C  D   E  F  G  H");
-
-        for (int i = 0; i < taille; i++) {
-            System.out.print((i+1) + " ");
-            for (int j = 0; j < taille; j++) {
-                System.out.print(plateau[i][j] + " ");
-            }
-            System.out.println("" + (i+1));
-        }
-
-        System.out.println("   A  B  C  D   E  F  G  H");
-    }
 
     /**
      * Affiche un message indiquant que le coup est invalide.
@@ -72,12 +35,6 @@ public class Ihm {
         System.out.println("Ce coup est invalide");
     }
 
-    /**
-     * Affiche un message indiquant que le format du coup est invalide.
-     */
-    public void formatCoupInvalide() {
-        System.out.println("Le format du coup est invalide");
-    }
 
     /**
      * Affiche les scores finaux des joueurs.
@@ -254,23 +211,40 @@ public class Ihm {
      * @param nomJ2 Le nom du second joueur
      */
     public void afficherPlateauAwale(String[][] plateau, int scoreJ1, int scoreJ2, String nomJ1, String nomJ2) {
-        System.out.println("Grenier " + nomJ2 + ": " + scoreJ2);
-        
-        System.out.println("   6   5   4   3   2   1");
-        System.out.print("| ");
+        System.out.println();
+        System.out.printf("[ Grenier %s : %2d ]\n", nomJ2, scoreJ2);
+        System.out.println("              +----+----+----+----+----+----+");
+
+        System.out.print("Cases       : |");
         for (int j = 5; j >= 0; j--) {
-            System.out.print(plateau[0][j] + " | ");
+            System.out.printf(" %2d |", j + 1);
         }
         System.out.println();
-        
-        System.out.print("| ");
+
+        System.out.print("Zone de jeu : |");
+        for (int j = 5; j >= 0; j--) {
+            System.out.printf(" %2s |", plateau[0][j]);
+        }
+        System.out.println();
+
+        // Séparation
+        System.out.println("              +----+----+----+----+----+----+");
+
+
+        System.out.print("Zone de jeu : |");
         for (int j = 0; j < 6; j++) {
-            System.out.print(plateau[1][j] + " | ");
+            System.out.printf(" %2s |", plateau[1][j]);
         }
         System.out.println();
-        System.out.println("   1   2   3   4   5   6");
-        
-        System.out.println("Grenier " + nomJ1 + ": " + scoreJ1);
+
+        System.out.print("Cases       : |");
+        for (int j = 0; j < 6; j++) {
+            System.out.printf(" %2d |", j + 1);
+        }
+        System.out.println();
+
+        System.out.println("              +----+----+----+----+----+----+");
+        System.out.printf("[ Grenier %s : %2d ]\n", nomJ1, scoreJ1);
     }
 
     /**

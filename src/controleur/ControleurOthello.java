@@ -40,16 +40,34 @@ public class ControleurOthello extends ControleurJeu {
      */
     @Override
     protected boolean interpreterCoup(String coup, Joueur joueur) {
-        if (coup.length() == 3 && coup.charAt(1) == ' ') {
-            int ligne = coup.charAt(0) - '1';
-            int colonne = coup.charAt(2) - 'A';
-            
-            if (jeu.verifCoup(ligne, colonne, joueur.getCouleur())) {
-                jeu.jouerCoup(ligne, colonne, joueur.getCouleur());
-                return true;
-            }
+        // Vérification du format de base
+        if (coup.length() != 3 || coup.charAt(1) != ' ') {
+            ihm.afficherFormatCoupInvalideOthello();
+            return false;
         }
-        return false;
+
+        // Vérification que le premier caractère est un chiffre entre 1 et 8
+        if (!Character.isDigit(coup.charAt(0)) || coup.charAt(0) < '1' || coup.charAt(0) > '8') {
+            ihm.afficherFormatCoupInvalideOthello();
+            return false;
+        }
+
+        // Vérification que le troisième caractère est une lettre entre A et H
+        if (!Character.isLetter(coup.charAt(2)) || coup.charAt(2) < 'A' || coup.charAt(2) > 'H') {
+            ihm.afficherFormatCoupInvalideOthello();
+            return false;
+        }
+
+        int ligne = coup.charAt(0) - '1';
+        int colonne = coup.charAt(2) - 'A';
+        
+        if (jeu.verifCoup(ligne, colonne, joueur.getCouleur())) {
+            jeu.jouerCoup(ligne, colonne, joueur.getCouleur());
+            return true;
+        } else {
+            ihm.afficherCoupInvalide();
+            return false;
+        }
     }
 
     /**

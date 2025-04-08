@@ -77,12 +77,6 @@ public interface Jeu {
      */
     int getScoreBlanc();
 
-    /**
-     * Récupère le score d'un joueur spécifique.
-     * @param joueur Le joueur dont on veut connaître le score
-     * @return Le score du joueur
-     */
-    public int getScoreJoueur(Joueur joueur);
 
     /**
      * Indique si le jeu supporte le mode contre l'IA.

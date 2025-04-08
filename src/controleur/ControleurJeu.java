@@ -202,9 +202,6 @@ public abstract class ControleurJeu {
                 coupValide = true;
                 joueurActuel = changerJoueur();
             }
-            else {
-                ihm.afficherCoupInvalide();
-            }
         }
     }
 
