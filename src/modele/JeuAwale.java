@@ -115,7 +115,7 @@ public class JeuAwale implements Jeu {
                 ligneActual = (ligneActual == 0) ? 1 : 0;
             }
             /*si les graines sont 12 ou + saute la case de départ*/
-            if (nbGraines > 11 && ligneActual == ligne && colonneActual == colonne)
+            if (ligneActual == ligne && colonneActual == colonne)
             {
                 continue;
             }
